@@ -1,0 +1,50 @@
+{
+  "name": "bughunter",
+  "description": "Bug hunting & external red-team operator — 51 skills, 14 workflow commands, 681 disclosed-report patterns across 24 vulnerability classes. Auto-loads relevant skills by keyword.",
+  "prompt": "file://~/.kiro/agents/bughunter-resources/prompt.md",
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "grep",
+    "glob",
+    "code",
+    "web_search",
+    "web_fetch",
+    "subagent",
+    "mcp:burp",
+    "mcp:playwright",
+    "mcp:semgrep"
+  ],
+  "allowedTools": [
+    "read",
+    "write",
+    "shell",
+    "grep",
+    "glob",
+    "web_search",
+    "web_fetch",
+    "code",
+    "subagent",
+    "mcp:burp",
+    "mcp:playwright",
+    "mcp:semgrep"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "skill://~/.kiro/skills/bughunter/**/SKILL.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo BugHunter agent loaded. 51 skills + 14 commands ready. Describe your target and relevant skills auto-load."
+      }
+    ]
+  },
+  "keyboardShortcut": "ctrl+shift+b",
+  "welcomeMessage": "BugHunter ready. Describe your target or engagement type and I'll load the right skills. Try: 'hunt target.com', 'I want to test for SSRF', or 'triage my finding'."
+}

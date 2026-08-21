@@ -1,0 +1,47 @@
+{
+  "name": "api-spec-review",
+  "description": "API security reviewer — analyzes OpenAPI/Swagger specs and GraphQL schemas against OWASP API Security Top 10, with secreview-backed SCA correlation.",
+  "prompt": "file://~/.kiro/agents/api-spec-review-resources/prompt.md",
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "write",
+    "subagent",
+    "web_search"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "find.*",
+        "cat.*",
+        "wc.*",
+        "grep.*",
+        "curl.*",
+        "jq.*"
+      ],
+      "autoAllowReadonly": true
+    },
+    "write": {
+      "allowedPaths": ["reports/api-spec-review/**", "*.md", "*.html"]
+    }
+  },
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo API Spec Review agent loaded. OWASP API Top 10 analysis. Point me at an OpenAPI spec or GraphQL schema."
+      }
+    ]
+  },
+  "keyboardShortcut": "ctrl+shift+a",
+  "welcomeMessage": "API Spec Review ready. Point me at an OpenAPI/Swagger spec, GraphQL schema, or API route directory and I'll analyze it against OWASP API Security Top 10. Try: 'review openapi.yaml' or 'analyze the GraphQL schema'."
+}

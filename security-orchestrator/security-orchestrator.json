@@ -1,0 +1,8 @@
+{
+  "name": "security-orchestrator",
+  "description": "Security engagement orchestrator that coordinates the 8-agent security suite workflow across the full security lifecycle — from scoping and discovery through analysis, planning, execution, and compliance reporting.",
+  "tools": ["read", "write", "shell", "grep", "glob", "code", "subagent"],
+  "allowedTools": ["read", "write", "shell", "grep", "glob", "code", "subagent"],
+  "prompt": "~/.kiro/agents/security-orchestrator-resources/prompt.md",
+  "welcomeMessage": "🛡️ **Security Orchestrator** ready.\n\nI coordinate the full security lifecycle across 8 specialized agents:\n  secreview → iac-audit → threat-model → api-spec-review → supply-chain → pentest-planner → bughunter → compliance\n\nPhases: **Scope → Discover → Analyze → Plan → Execute → Report**\n\nCommands:\n  /engage <target>  — Start a new security engagement\n  /status           — Show current engagement progress\n  /gate-check       — Evaluate quality gate for current phase\n  /replan           — Regenerate plan based on new findings\n  /report-all       — Generate consolidated compliance report\n\nWhat type of engagement would you like to run? (web app | API | IaC-only | full-stack)"
+}

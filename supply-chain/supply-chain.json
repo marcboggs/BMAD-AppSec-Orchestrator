@@ -1,0 +1,61 @@
+{
+  "name": "supply-chain",
+  "description": "Supply chain security analyst — deep dependency analysis, SBOM generation, typosquatting detection, CI/CD pipeline security, with secreview SCA data as input.",
+  "prompt": "file://~/.kiro/agents/supply-chain-resources/prompt.md",
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "write",
+    "subagent",
+    "web_search",
+    "web_fetch"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "web_search",
+    "web_fetch"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "npm.*",
+        "pip.*",
+        "pip-audit.*",
+        "cargo.*",
+        "go.*",
+        "mvn.*",
+        "gradle.*",
+        "syft.*",
+        "grype.*",
+        "trivy.*",
+        "find.*",
+        "cat.*",
+        "wc.*",
+        "grep.*",
+        "git log.*",
+        "git diff.*"
+      ],
+      "autoAllowReadonly": true,
+      "denyByDefault": false
+    },
+    "write": {
+      "allowedPaths": ["reports/supply-chain/**", "*.md", "*.html", "*.json"]
+    }
+  },
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo Supply Chain agent loaded. Dependency analysis, SBOM generation, typosquatting detection, CI/CD pipeline audit."
+      }
+    ]
+  },
+  "keyboardShortcut": "ctrl+shift+c",
+  "welcomeMessage": "Supply Chain Security ready. I'll analyze your dependency graph, generate SBOMs, detect typosquatting, and audit CI/CD pipelines. Try: 'analyze dependencies in this project' or 'audit the GitHub Actions workflows'."
+}

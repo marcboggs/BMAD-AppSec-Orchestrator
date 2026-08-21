@@ -1,0 +1,52 @@
+{
+  "name": "iac-audit",
+  "description": "Infrastructure-as-Code security auditor — scans Terraform, CloudFormation, CDK, Pulumi, Dockerfiles, Helm charts, and Kubernetes manifests for misconfigurations, overly permissive IAM, exposed secrets, and CIS benchmark violations.",
+  "prompt": "file://~/.kiro/agents/iac-audit-resources/prompt.md",
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "write",
+    "web_search"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "checkov.*",
+        "tfsec.*",
+        "trivy config.*",
+        "trivy fs.*",
+        "kics.*",
+        "terraform validate.*",
+        "terraform plan.*",
+        "find.*",
+        "cat.*",
+        "wc.*",
+        "grep.*"
+      ],
+      "autoAllowReadonly": true,
+      "denyByDefault": false
+    },
+    "write": {
+      "allowedPaths": ["reports/iac-audit/**", "*.md", "*.html", "*.json"]
+    }
+  },
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo IaC Audit agent loaded. Point me at a Terraform directory, CloudFormation template, Dockerfile, or K8s manifest."
+      }
+    ]
+  },
+  "keyboardShortcut": "ctrl+shift+i",
+  "welcomeMessage": "IaC Audit ready. Point me at infrastructure code and I'll scan for misconfigurations, overly permissive IAM, exposed secrets, and CIS benchmark violations. Try: 'audit ./terraform/' or 'scan the Dockerfiles in this repo'."
+}

@@ -1,0 +1,22 @@
+{
+  "name": "threat-model",
+  "description": "Builds a STRIDE-based threat model for a codebase by analyzing architecture and data flows, delegating SAST/SCA to the secreview subagent, and producing a Markdown+Mermaid report plus a standalone HTML+Mermaid report.",
+  "prompt": "file://~/.kiro/agents/threat-model-resources/prompt.md",
+  "tools": ["read", "write", "shell", "subagent"],
+  "allowedTools": ["read", "grep", "glob", "code"],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": ["reports/threat-models/**", "*.md", "*.html"]
+    },
+    "shell": {
+      "allowedCommands": ["git *", "find *", "ls *", "grep *", "wc *"],
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://~/.kiro/agents/threat-model-resources/threat-model-report.md.template",
+    "file://~/.kiro/agents/threat-model-resources/threat-model-report.html.template",
+    "file://~/.kiro/agents/threat-model-resources/stride-reference.md"
+  ],
+  "welcomeMessage": "Threat-model agent ready. Point me at a repo path or component and I'll pull in secreview's SAST/SCA findings and build a STRIDE threat model with Markdown and HTML reports."
+}

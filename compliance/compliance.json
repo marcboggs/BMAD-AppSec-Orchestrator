@@ -1,0 +1,43 @@
+{
+  "name": "compliance",
+  "description": "Compliance mapping agent — maps secreview and threat-model findings to regulatory frameworks (SOC2, PCI-DSS, HIPAA, NIST 800-53, CIS Benchmarks) and generates audit-ready evidence documents.",
+  "prompt": "file://~/.kiro/agents/compliance-resources/prompt.md",
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "write",
+    "subagent",
+    "web_search"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "find.*",
+        "cat.*",
+        "wc.*",
+        "grep.*"
+      ],
+      "autoAllowReadonly": true
+    },
+    "write": {
+      "allowedPaths": ["reports/compliance/**", "*.md", "*.html", "*.json"]
+    }
+  },
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo Compliance agent loaded. Maps security findings to SOC2, PCI-DSS, HIPAA, NIST 800-53, and CIS Benchmarks."
+      }
+    ]
+  },
+  "welcomeMessage": "Compliance Mapping ready. I'll take findings from secreview and threat-model and map them to regulatory frameworks. Try: 'map findings to PCI-DSS' or 'generate SOC2 evidence for this project'."
+}

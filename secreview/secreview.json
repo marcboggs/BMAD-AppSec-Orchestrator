@@ -1,0 +1,51 @@
+{
+  "name": "secreview",
+  "description": "SAST-driven security reviewer — performs static analysis and SCA on source code to identify vulnerabilities, map attack surface, and produce targeted findings that feed into DAST/pentest workflows.",
+  "prompt": "file://~/.kiro/agents/secreview-resources/prompt.md",
+  "tools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "web_search",
+    "web_fetch"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": ["reports/secreview/**", "*.md", "*.html", "*.json"]
+    },
+    "shell": {
+      "allowedCommands": [
+        "semgrep.*",
+        "npm audit.*",
+        "pip-audit.*",
+        "cargo audit.*",
+        "cat.*",
+        "find.*",
+        "wc.*",
+        "head.*",
+        "tail.*"
+      ],
+      "autoAllowReadonly": true,
+      "denyByDefault": false
+    }
+  },
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo SecReview agent loaded. SAST+SCA workflow: analyze source → SCA dependencies → identify sinks → map endpoints → produce DAST payloads."
+      }
+    ]
+  },
+  "keyboardShortcut": "ctrl+shift+s",
+  "welcomeMessage": "SecReview ready. Point me at a codebase or directory and I'll run SAST+SCA analysis to map vulnerabilities and produce targeted DAST payloads. Try: 'review ./routes/' or 'find injection sinks in this project'."
+}
