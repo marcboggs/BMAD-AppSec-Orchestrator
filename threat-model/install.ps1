@@ -111,6 +111,9 @@ Write-Step "Installing agent files..."
 Copy-Item -Path (Join-Path $ScriptDir "$AgentName.json") -Destination (Join-Path $KiroAgentsDir "$AgentName.json") -Force
 Write-Success "Config  → ~\.kiro\agents\$AgentName.json"
 
+Copy-Item -Path (Join-Path $ScriptDir "prompt.md") -Destination (Join-Path $ResourcesDir "prompt.md") -Force
+Write-Success "Prompt  → ~\.kiro\agents\$AgentName-resources\prompt.md"
+
 # Resources
 Write-Step "Installing resources..."
 $ResourcesSrc = Join-Path $ScriptDir "resources"

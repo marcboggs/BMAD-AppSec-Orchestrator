@@ -89,6 +89,9 @@ step "Installing agent files..."
 cp "$SCRIPT_DIR/${AGENT_NAME}.json" "$KIRO_AGENTS_DIR/${AGENT_NAME}.json"
 ok "Config  → ~/.kiro/agents/${AGENT_NAME}.json"
 
+cp "$SCRIPT_DIR/prompt.md" "$RESOURCES_DIR/prompt.md"
+ok "Prompt  → ~/.kiro/agents/${AGENT_NAME}-resources/prompt.md"
+
 step "Installing resources..."
 for file in "$SCRIPT_DIR/resources/"*; do
     if [ -f "$file" ]; then
