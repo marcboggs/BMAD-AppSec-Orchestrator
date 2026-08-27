@@ -1,17 +1,17 @@
 ﻿<#
 .SYNOPSIS
-    Installs the threat-model Kiro agent.
+    Installs the security-architecture Kiro agent.
 .DESCRIPTION
-    STRIDE-based threat modeling with Markdown + HTML reports.
-    REQUIRES: secreview (spawned as subagent for SAST/SCA findings).
+    Design-level security architecture review with Markdown + HTML reports.
+    REQUIRES: secreview (spawned as subagent for SAST/SCA corroboration).
 #>
 
 $ErrorActionPreference = "Stop"
 
 # ─── Config ────────────────────────────────────────────────────────────────────
-$AgentName     = "threat-model"
-$AgentLabel    = "Threat Model"
-$AgentDesc     = "STRIDE threat modeling"
+$AgentName     = "security-architecture"
+$AgentLabel    = "Security Architecture"
+$AgentDesc     = "design-level review"
 $KiroAgentsDir = Join-Path (Join-Path $env:USERPROFILE ".kiro") "agents"
 $ResourcesDir  = Join-Path $KiroAgentsDir "$AgentName-resources"
 $ScriptDir     = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -22,7 +22,7 @@ function Write-Header {
     Write-Host ""
     Write-Host "  ┌$border┐" -ForegroundColor DarkCyan
     Write-Host "  │                                                    │" -ForegroundColor DarkCyan
-    Write-Host "  │   🛡️  $AgentLabel — $AgentDesc" -ForegroundColor DarkCyan -NoNewline
+    Write-Host "  │   🏛️  $AgentLabel — $AgentDesc" -ForegroundColor DarkCyan -NoNewline
     $pad = 52 - 8 - $AgentLabel.Length - $AgentDesc.Length
     Write-Host (" " * $pad) -NoNewline
     Write-Host "│" -ForegroundColor DarkCyan
@@ -82,7 +82,7 @@ if (Test-Path $SecreviewConfig) {
     Write-Success "secreview is installed"
 } else {
     Write-Warn "secreview is required but not installed"
-    Write-Info "Threat-model delegates SAST/SCA scanning to secreview"
+    Write-Info "security-architecture delegates SAST/SCA corroboration to secreview"
     Write-Host ""
 
     $SecreviewInstaller = Join-Path (Join-Path (Split-Path $ScriptDir) "secreview") "install.ps1"

@@ -32,7 +32,22 @@
   .sev-high { background: var(--high); }
   .sev-medium { background: var(--med); }
   .sev-low { background: var(--low); }
-  .mermaid { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 16px 0; }
+  /* Diagram sizing: make Mermaid diagrams fill the width and stay readable.
+     useMaxWidth:false (see init) drops the intrinsic max-width cap; these rules
+     then scale the SVG up to the container instead of rendering it tiny. */
+  .mermaid {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px; margin: 20px 0; text-align: center; overflow-x: auto;
+  }
+  .mermaid svg {
+    width: 100% !important; max-width: 100% !important; height: auto !important;
+    min-height: 320px; display: block; margin: 0 auto;
+  }
+  /* Very wide diagrams (tagged .wide after render) keep a legible scale and
+     scroll horizontally instead of being crushed to fit the column. */
+  .mermaid.wide svg {
+    width: auto !important; max-width: none !important; height: 620px !important; margin: 0;
+  }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin: 14px 0; }
   code { background: var(--panel); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
   footer { margin-top: 60px; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 14px; }
@@ -129,7 +144,27 @@
 </div>
 
 <script>
-  mermaid.initialize({ startOnLoad: true, theme: "dark" });
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: "dark",
+    themeVariables: { fontSize: "16px" },
+    flowchart: { useMaxWidth: false, htmlLabels: true },
+    sequence: { useMaxWidth: false },
+    gantt: { useMaxWidth: false },
+    pie: { useMaxWidth: false }
+  });
+  // Render, then flag very wide diagrams so they stay legible (larger scale +
+  // horizontal scroll) instead of being shrunk to fit the text column.
+  mermaid.run().then(() => {
+    document.querySelectorAll('.mermaid').forEach(box => {
+      const svg = box.querySelector('svg');
+      if (!svg) return;
+      const vb = (svg.getAttribute('viewBox') || '').split(/\s+/).map(Number);
+      const w = vb[2] || svg.getBBox().width;
+      const h = vb[3] || svg.getBBox().height;
+      if (w && h && (w / h) > 2.2) box.classList.add('wide');
+    });
+  });
 </script>
 </body>
 </html>

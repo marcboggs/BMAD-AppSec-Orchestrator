@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>{{REPORT_TITLE}}</title>
+<title>Security Architecture Review: {{COMPONENT_NAME}}</title>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   :root {
@@ -22,7 +22,6 @@
   .meta { color: var(--muted); font-size: 0.9rem; }
   .meta span { margin-right: 18px; }
   h2 { font-size: 1.2rem; margin-top: 40px; border-left: 3px solid var(--accent); padding-left: 10px; }
-  h3 { font-size: 1.05rem; margin-top: 24px; color: var(--accent); }
   section { margin-bottom: 8px; }
   table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.92rem; }
   th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
@@ -51,14 +50,6 @@
   }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin: 14px 0; }
   code { background: var(--panel); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
-  pre { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font-size: 0.88rem; }
-  ul, ol { padding-left: 20px; margin: 10px 0; }
-  li { margin: 4px 0; }
-  .finding { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin: 14px 0; border-left: 4px solid var(--accent); }
-  .finding.critical { border-left-color: var(--crit); }
-  .finding.high { border-left-color: var(--high); }
-  .finding.medium { border-left-color: var(--med); }
-  .finding.low { border-left-color: var(--low); }
   footer { margin-top: 60px; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 14px; }
 </style>
 </head>
@@ -66,58 +57,92 @@
 <div class="wrap">
 
   <header>
-    <h1>{{REPORT_TITLE}}</h1>
+    <h1>Security Architecture Review: {{COMPONENT_NAME}}</h1>
     <div class="meta">
-      <span><strong>Agent:</strong> {{AGENT_NAME}}</span>
-      <span><strong>Scope:</strong> {{SCOPE}}</span>
+      <span><strong>Scope:</strong> {{SCOPE_DESCRIPTION}}</span>
       <span><strong>Date:</strong> {{DATE}}</span>
+      <span><strong>Review type:</strong> {{REVIEW_TYPE}}</span>
+      <span><strong>Framework:</strong> {{FRAMEWORK}}</span>
     </div>
   </header>
 
-  <!-- Report sections go here. Use these HTML patterns:
-
-  VISUALIZATION STANDARD: Every graph, chart, and diagram MUST be a Mermaid
-  <div class="mermaid"> block (see reports-schema.md). Do NOT embed raster images
-  (PNG/JPG/SVG), ASCII art, or external chart services for any diagram/chart. If a
-  visual can't be expressed in Mermaid, use an HTML <table> instead.
-
-  For sections:
   <section>
-    <h2>Section Title</h2>
-    <p>Description text</p>
+    <h2>1. Executive Summary</h2>
+    <div class="card">{{EXEC_SUMMARY}}</div>
   </section>
 
-  For Mermaid diagrams/charts (copy exact source from .md report — this is the ONLY
-  allowed way to render a graph/chart/diagram):
-  <div class="mermaid">
-  graph TD
-      A --> B
-  </div>
-
-  For findings:
-  <div class="finding critical">
-    <h3>[Critical] Finding Title</h3>
+  <section>
+    <h2>2. Corroboration Coverage</h2>
     <table>
-      <tr><th>Field</th><th>Value</th></tr>
-      <tr><td>File</td><td>path/to/file.ts:42</td></tr>
-      <tr><td>CWE</td><td>CWE-89</td></tr>
+      <tr><th>Source</th><th>Status</th></tr>
+      <tr><td>secreview SAST</td><td>{{SAST_STATUS}}</td></tr>
+      <tr><td>secreview SCA</td><td>{{SCA_STATUS}}</td></tr>
     </table>
-  </div>
+  </section>
 
-  For severity badges in tables:
-  <span class="badge sev-critical">Critical</span>
-  <span class="badge sev-high">High</span>
-  <span class="badge sev-medium">Medium</span>
-  <span class="badge sev-low">Low</span>
+  <section>
+    <h2>3. Trust-Zone Architecture</h2>
+    <p>{{ARCHITECTURE_DESCRIPTION}}</p>
+    <div class="mermaid">
+{{MERMAID_TRUSTZONE_DIAGRAM}}
+    </div>
+    <h3>High-risk design decision (detail)</h3>
+    <div class="mermaid">
+{{MERMAID_SEQUENCE_DIAGRAM}}
+    </div>
+  </section>
 
-  For summary cards:
-  <div class="card">Summary content here</div>
+  <section>
+    <h2>4. Trust-Zone & Component Inventory</h2>
+    <table>
+      <tr><th>Zone</th><th>Component</th><th>Purpose</th><th>Trust level</th><th>Notes</th></tr>
+      {{COMPONENT_ROWS}}
+    </table>
+  </section>
 
-  -->
+  <section>
+    <h2>5. Architecture Risk Register</h2>
+    <table>
+      <tr><th>ID</th><th>Category</th><th>Design weakness</th><th>Framework control</th><th>Corroboration</th><th>Design/Confirmed</th><th>Severity</th><th>Recommended control</th></tr>
+      {{RISK_REGISTER_ROWS}}
+      <!-- Example row (remove once populated):
+      <tr>
+        <td>SA-AUTHZ-001</td><td>Authorization</td>
+        <td>Authz decision made at the gateway, not per-service — internal calls trusted implicitly</td>
+        <td>NIST AC-6 / ASVS 4.1</td>
+        <td>[SR-SAST-014]</td>
+        <td>confirmed in code</td>
+        <td><span class="badge sev-high">High</span></td>
+        <td>Enforce per-service authorization; adopt zero-trust between tiers</td>
+      </tr>
+      -->
+    </table>
+  </section>
 
-  {{REPORT_CONTENT}}
+  <section>
+    <h2>6. Framework Coverage</h2>
+    <table>
+      <tr><th>Control / Requirement</th><th>Framework</th><th>Assessment</th><th>Related finding</th></tr>
+      {{FRAMEWORK_ROWS}}
+    </table>
+  </section>
 
-  <footer>Generated by {{AGENT_NAME}} — Security Agent Suite for Kiro CLI</footer>
+  <section>
+    <h2>7. Recommendations (Prioritized)</h2>
+    <div class="card">{{RECOMMENDATIONS}}</div>
+  </section>
+
+  <section>
+    <h2>8. Handoff Notes</h2>
+    <div class="card">{{HANDOFF_NOTES}}</div>
+  </section>
+
+  <section>
+    <h2>9. Assumptions & Out-of-Scope</h2>
+    <div class="card">{{ASSUMPTIONS}}</div>
+  </section>
+
+  <footer>Generated by the security-architecture Kiro agent, corroborated by secreview SAST/SCA output. Feeds threat-model, compliance, and pentest-planner.</footer>
 </div>
 
 <script>

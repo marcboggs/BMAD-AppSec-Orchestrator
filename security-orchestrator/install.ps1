@@ -18,7 +18,7 @@ function Write-Banner {
     Write-Host (" " * 19) -NoNewline
     Write-Host "$vr" -ForegroundColor Cyan
     Write-Host "  $vr  " -ForegroundColor Cyan -NoNewline
-    Write-Host "Coordinates the 8-agent security suite" -ForegroundColor DarkGray -NoNewline
+    Write-Host "Coordinates the 9-agent security suite" -ForegroundColor DarkGray -NoNewline
     Write-Host (" " * 12) -NoNewline
     Write-Host "$vr" -ForegroundColor Cyan
     Write-Host "  $bl$line$br" -ForegroundColor Cyan

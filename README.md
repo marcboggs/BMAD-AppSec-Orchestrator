@@ -1,6 +1,6 @@
 # Security Agent Suite for Kiro CLI
 
-Nine security-focused Kiro agents orchestrated using the **BMAD methodology** (Breakthrough Method of Agile AI-Driven Development) — specialized personas with structured handoffs, quality gates, and iterative feedback loops across the full security lifecycle.
+Ten security-focused Kiro agents orchestrated using the **BMAD methodology** (Breakthrough Method of Agile AI-Driven Development) — specialized personas with structured handoffs, quality gates, and iterative feedback loops across the full security lifecycle.
 
 ## BMAD Methodology
 
@@ -26,6 +26,7 @@ graph LR
     end
 
     subgraph "Phase 3: ANALYZE"
+        A0[security-architecture<br/>Design review]
         A1[threat-model<br/>STRIDE]
         A2[api-spec-review<br/>API Top 10]
         A3[supply-chain<br/>Deps & CI/CD]
@@ -45,8 +46,9 @@ graph LR
 
     S --> D1
     S --> D2
-    D1 -->|Gate: Triage| A1
+    D1 -->|Gate: Triage| A0
     D2 -.-> R
+    A0 -->|risk register| A1
     A1 --> A2
     A1 --> A3
     A1 -->|Gate: Model complete| P
@@ -59,6 +61,7 @@ graph LR
     style D1 fill:#1a5276,stroke:#2980b9,color:#ecf0f1
     style D2 fill:#1a5276,stroke:#2980b9,color:#ecf0f1
     style A1 fill:#1e8449,stroke:#27ae60,color:#ecf0f1
+    style A0 fill:#1e8449,stroke:#27ae60,color:#ecf0f1
     style A2 fill:#1e8449,stroke:#27ae60,color:#ecf0f1
     style A3 fill:#1e8449,stroke:#27ae60,color:#ecf0f1
     style P fill:#7d3c98,stroke:#a569bd,color:#ecf0f1
@@ -118,6 +121,7 @@ graph TD
 | **bughunter** | Red-team operator | Senior pentester, evidence-mandatory | secreview |
 | **api-spec-review** | API security reviewer | API specialist, spec-driven | secreview |
 | **supply-chain** | Dependency & CI/CD auditor | Supply chain researcher, reachability-focused | secreview |
+| **security-architecture** | Design-level architecture reviewer | Principal security architect, principle-driven | secreview |
 | **threat-model** | STRIDE modeler | AppSec architect, scan-corroborated | secreview |
 | **compliance** | Regulatory mapper | GRC specialist, auditor-readable | secreview, threat-model |
 | **pentest-planner** | Pentest plan generator | Engagement manager, intelligence-driven | secreview, threat-model, bughunter |
@@ -132,12 +136,14 @@ graph TD
     BH[🐛 bughunter<br/><i>Red-team</i>]
     API[📋 api-spec-review<br/><i>API Security</i>]
     SC[📦 supply-chain<br/><i>Dep & CI/CD</i>]
+    SA[🏛️ security-architecture<br/><i>Design Review</i>]
     TM[🛡️ threat-model<br/><i>STRIDE</i>]
     CO[📜 compliance<br/><i>Regulatory</i>]
     PP[🎯 pentest-planner<br/><i>Test Plans</i>]
 
     SO -.->|orchestrates| SR
     SO -.->|orchestrates| IA
+    SO -.->|orchestrates| SA
     SO -.->|orchestrates| TM
     SO -.->|orchestrates| BH
     SO -.->|orchestrates| CO
@@ -146,9 +152,11 @@ graph TD
     SR --> BH
     SR --> API
     SR --> SC
+    SR --> SA
     SR --> TM
     SR --> CO
     SR --> PP
+    SA --> TM
     TM --> CO
     TM --> PP
     BH --> PP
@@ -159,6 +167,7 @@ graph TD
     style BH fill:#7d3c98,stroke:#a569bd,color:#fff
     style API fill:#7d3c98,stroke:#a569bd,color:#fff
     style SC fill:#7d3c98,stroke:#a569bd,color:#fff
+    style SA fill:#1e8449,stroke:#27ae60,color:#fff
     style TM fill:#1e8449,stroke:#27ae60,color:#fff
     style CO fill:#b9770e,stroke:#f39c12,color:#fff
     style PP fill:#b9770e,stroke:#f39c12,color:#fff
@@ -175,6 +184,7 @@ Each agent writes to a standard output path and uses a cross-reference prefix:
 | bughunter | `reports/bughunter/` | BH | `[BH-SQLI-001]` |
 | api-spec-review | `reports/api-spec-review/` | API | `[API-BOLA-002]` |
 | supply-chain | `reports/supply-chain/` | SC | `[SC-CVE-2024-1234]` |
+| security-architecture | `reports/security-architecture/` | SA | `[SA-AUTHZ-001]` |
 | threat-model | `reports/threat-models/` | TM | `[TM-T4]` |
 | compliance | `reports/compliance/` | CO | `[CO-PCI-6.2]` |
 | pentest-planner | `reports/pentest-plans/` | PP | `[PP-TC-012]` |
@@ -281,6 +291,7 @@ Each agent can be installed separately. Dependencies are checked and auto-instal
 .\bughunter\install.ps1
 .\api-spec-review\install.ps1
 .\supply-chain\install.ps1
+.\security-architecture\install.ps1
 .\threat-model\install.ps1
 
 # Multiple dependencies (auto-installed if missing)
@@ -296,6 +307,7 @@ Each agent can be installed separately. Dependencies are checked and auto-instal
 ./bughunter/install.sh
 ./api-spec-review/install.sh
 ./supply-chain/install.sh
+./security-architecture/install.sh
 ./threat-model/install.sh
 ./compliance/install.sh
 ./pentest-planner/install.sh
@@ -305,11 +317,11 @@ Each agent can be installed separately. Dependencies are checked and auto-instal
 
 ```bash
 # Start the orchestrator — it handles everything
-kiro-cli --agent security-orchestrator
+kiro chat --agent security-orchestrator
 > /engage ./my-application
 
 # Or run agents individually
-kiro-cli --agent secreview
+kiro chat --agent secreview
 > review ./src
 ```
 
@@ -328,6 +340,8 @@ kiro-cli --agent secreview
 │   └── skills/                      ← 51 skill folders + 14 commands
 ├── api-spec-review/                 ← Layer 2: API security reviewer
 ├── supply-chain/                    ← Layer 2: Dependency & CI/CD auditor
+├── security-architecture/           ← Layer 3: Design-level architecture reviewer
+│   └── resources/                   ← Templates + architecture-review reference
 ├── threat-model/                    ← Layer 3: STRIDE threat modeler
 │   └── resources/                   ← Templates + STRIDE reference
 ├── compliance/                      ← Layer 4: Regulatory mapper
@@ -342,6 +356,7 @@ kiro-cli --agent secreview
 - [`bughunter/README.md`](bughunter/README.md) — Full command reference and coverage
 - [`api-spec-review/`](api-spec-review/) — OWASP API Top 10 analysis
 - [`supply-chain/`](supply-chain/) — Dependency, SBOM, and CI/CD security
+- [`security-architecture/`](security-architecture/) — Design-level architecture review (ASVS / Well-Architected / NIST 800-53)
 - [`threat-model/README.md`](threat-model/README.md) — STRIDE workflow and report format
 - [`compliance/`](compliance/) — Regulatory framework mapping
 - [`pentest-planner/`](pentest-planner/) — Pentest plan generation
@@ -351,7 +366,7 @@ kiro-cli --agent secreview
 **Windows:**
 ```powershell
 @("security-orchestrator","secreview","iac-audit","bughunter","api-spec-review",
-  "supply-chain","threat-model","compliance","pentest-planner") | ForEach-Object {
+  "supply-chain","security-architecture","threat-model","compliance","pentest-planner") | ForEach-Object {
     Remove-Item "$env:USERPROFILE\.kiro\agents\$_.json" -ErrorAction SilentlyContinue
     Remove-Item -Recurse "$env:USERPROFILE\.kiro\agents\$_-resources" -ErrorAction SilentlyContinue
 }
@@ -361,7 +376,7 @@ Remove-Item -Recurse "$env:USERPROFILE\.kiro\skills\bughunter" -ErrorAction Sile
 **Linux/macOS:**
 ```bash
 for agent in security-orchestrator secreview iac-audit bughunter api-spec-review \
-             supply-chain threat-model compliance pentest-planner; do
+             supply-chain security-architecture threat-model compliance pentest-planner; do
     rm -f ~/.kiro/agents/${agent}.json
     rm -rf ~/.kiro/agents/${agent}-resources
 done

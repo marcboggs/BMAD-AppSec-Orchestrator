@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Installs the threat-model Kiro agent.
-# REQUIRES: secreview (spawned as subagent for SAST/SCA findings).
+# Installs the security-architecture Kiro agent.
+# REQUIRES: secreview (spawned as subagent for SAST/SCA corroboration).
 # ─────────────────────────────────────────────────────────────────────────────
 
 set -euo pipefail
 
 # ─── Config ──────────────────────────────────────────────────────────────────
-AGENT_NAME="threat-model"
-AGENT_LABEL="Threat Model"
-AGENT_DESC="STRIDE threat modeling"
+AGENT_NAME="security-architecture"
+AGENT_LABEL="Security Architecture"
+AGENT_DESC="design-level review"
 KIRO_AGENTS_DIR="$HOME/.kiro/agents"
 RESOURCES_DIR="$KIRO_AGENTS_DIR/${AGENT_NAME}-resources"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -27,7 +27,7 @@ header() {
     echo ""
     echo -e "  ${CYAN}┌────────────────────────────────────────────────────────┐${RESET}"
     echo -e "  ${CYAN}│                                                        │${RESET}"
-    echo -e "  ${CYAN}│${RESET}   🛡️  ${BOLD}${AGENT_LABEL}${RESET} — ${AGENT_DESC}              ${CYAN}│${RESET}"
+    echo -e "  ${CYAN}│${RESET}   🏛️  ${BOLD}${AGENT_LABEL}${RESET} — ${AGENT_DESC}           ${CYAN}│${RESET}"
     echo -e "  ${CYAN}│                                                        │${RESET}"
     echo -e "  ${CYAN}└────────────────────────────────────────────────────────┘${RESET}"
     echo ""
@@ -42,7 +42,7 @@ info()    { echo -e "  ${DIM}ℹ $1${RESET}"; }
 footer() {
     echo ""
     echo -e "  ${GREEN}┌────────────────────────────────────────────────────────┐${RESET}"
-    echo -e "  ${GREEN}│  ✓  ${AGENT_LABEL} installed successfully                 │${RESET}"
+    echo -e "  ${GREEN}│  ✓  ${AGENT_LABEL} installed successfully         │${RESET}"
     echo -e "  ${GREEN}└────────────────────────────────────────────────────────┘${RESET}"
     echo ""
     echo -e "  ${DIM}Run:${RESET} ${YELLOW}/agent ${AGENT_NAME}${RESET}"
@@ -60,7 +60,7 @@ if [ -f "$KIRO_AGENTS_DIR/secreview.json" ]; then
     ok "secreview is installed"
 else
     warn "secreview is required but not installed"
-    info "Threat-model delegates SAST/SCA scanning to secreview"
+    info "security-architecture delegates SAST/SCA corroboration to secreview"
     echo ""
 
     SECREVIEW_INSTALLER="$(dirname "$SCRIPT_DIR")/secreview/install.sh"

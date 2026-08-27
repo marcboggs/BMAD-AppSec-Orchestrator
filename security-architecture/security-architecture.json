@@ -1,0 +1,22 @@
+{
+  "name": "security-architecture",
+  "description": "Design-level security architecture reviewer. Evaluates proposed and existing architectures against security principles (defense-in-depth, least privilege, segmentation, secrets/key management, authn/authz architecture) and frameworks (OWASP ASVS, Well-Architected Security Pillar, NIST 800-53 control families). Delegates SAST/SCA corroboration to secreview and feeds architecture findings into threat-model.",
+  "prompt": "file://~/.kiro/agents/security-architecture-resources/prompt.md",
+  "tools": ["read", "write", "shell", "grep", "glob", "code", "subagent"],
+  "allowedTools": ["read", "grep", "glob", "code", "subagent"],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": ["reports/security-architecture/**", "*.md", "*.html"]
+    },
+    "shell": {
+      "allowedCommands": ["git *", "find *", "ls *", "grep *", "wc *"],
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://~/.kiro/agents/security-architecture-resources/security-architecture-report.md.template",
+    "file://~/.kiro/agents/security-architecture-resources/security-architecture-report.html.template",
+    "file://~/.kiro/agents/security-architecture-resources/architecture-review-reference.md"
+  ],
+  "welcomeMessage": "Security-architecture agent ready. Point me at a design doc, ADR, architecture diagram, or repo and I'll review the design against security principles and frameworks (ASVS / Well-Architected / NIST 800-53), then hand a prioritized architecture-risk register to threat-model."
+}
