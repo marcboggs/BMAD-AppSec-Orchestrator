@@ -317,11 +317,11 @@ Each agent can be installed separately. Dependencies are checked and auto-instal
 
 ```bash
 # Start the orchestrator — it handles everything
-kiro chat --agent security-orchestrator
-> /engage ./my-application
+kiro-cli --agent security-orchestrator
+> /engage ./my-application, scope mywebapp.com
 
 # Or run agents individually
-kiro chat --agent secreview
+kiro-cli --agent secreview
 > review ./src
 ```
 
