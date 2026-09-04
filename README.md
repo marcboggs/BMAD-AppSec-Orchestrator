@@ -258,7 +258,7 @@ sequenceDiagram
 - [Kiro CLI](https://kiro.dev) installed and configured
 - Recommended: [Semgrep](https://semgrep.dev) for automated SAST
 - Recommended: [checkov](https://www.checkov.io/) or [trivy](https://trivy.dev/) for IaC scanning
-- Optional: Burp Suite, Playwright, and Semgrep MCP servers (for bughunter)
+- Optional: [Burp Suite mcp](https://github.com/marcboggs/Burp-Suite-MCP-for-Kiro-and-Claude), Playwright, and Semgrep MCP servers (for bughunter)
 
 ## Install All
 
