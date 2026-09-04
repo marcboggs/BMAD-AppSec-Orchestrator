@@ -17,10 +17,10 @@ $ScriptDir   = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ClaudeHome  = Join-Path $env:USERPROFILE ".claude"
 
 Write-Host ""
-Write-Host "  ┌────────────────────────────────────────────────────────┐" -ForegroundColor Magenta
-Write-Host "  │   🔐  Security Agent Suite for Claude Code               │" -ForegroundColor Magenta
-Write-Host "  │   10 agents · 54 skills · 19 commands (user-level)       │" -ForegroundColor Magenta
-Write-Host "  └────────────────────────────────────────────────────────┘" -ForegroundColor Magenta
+Write-Host "  ==========================================================" -ForegroundColor Magenta
+Write-Host "   Security Agent Suite for Claude Code" -ForegroundColor Magenta
+Write-Host "   10 agents / 54 skills / 19 commands (user-level)" -ForegroundColor Magenta
+Write-Host "  ==========================================================" -ForegroundColor Magenta
 Write-Host ""
 
 $AgentsDst   = Join-Path $ClaudeHome "agents"
@@ -28,19 +28,19 @@ $SkillsDst   = Join-Path $ClaudeHome "skills"
 $CommandsDst = Join-Path $ClaudeHome "commands"
 New-Item -ItemType Directory -Force -Path $AgentsDst, $SkillsDst, $CommandsDst | Out-Null
 
-Write-Host "  ● Installing agents..." -ForegroundColor DarkGray
+Write-Host "  * Installing agents..." -ForegroundColor DarkGray
 Copy-Item -Path (Join-Path $ScriptDir ".claude\agents\*") -Destination $AgentsDst -Recurse -Force
-Write-Host "  ✓ 10 agents  → ~\.claude\agents\ (incl. resources\ templates)" -ForegroundColor Green
+Write-Host "  [OK] 10 agents  -> ~\.claude\agents\ (incl. resources\ templates)" -ForegroundColor Green
 
-Write-Host "  ● Installing skills..." -ForegroundColor DarkGray
+Write-Host "  * Installing skills..." -ForegroundColor DarkGray
 Copy-Item -Path (Join-Path $ScriptDir ".claude\skills\*") -Destination $SkillsDst -Recurse -Force
 $skillCount = (Get-ChildItem -Path $SkillsDst -Directory).Count
-Write-Host "  ✓ Skills     → ~\.claude\skills\ ($skillCount folders)" -ForegroundColor Green
+Write-Host "  [OK] Skills     -> ~\.claude\skills\ ($skillCount folders)" -ForegroundColor Green
 
-Write-Host "  ● Installing commands..." -ForegroundColor DarkGray
+Write-Host "  * Installing commands..." -ForegroundColor DarkGray
 Copy-Item -Path (Join-Path $ScriptDir ".claude\commands\*") -Destination $CommandsDst -Recurse -Force
 $cmdCount = (Get-ChildItem -Path $CommandsDst -Filter "*.md").Count
-Write-Host "  ✓ Commands   → ~\.claude\commands\ ($cmdCount files)" -ForegroundColor Green
+Write-Host "  [OK] Commands   -> ~\.claude\commands\ ($cmdCount files)" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "  MCP servers (burp/playwright/semgrep) are project-scoped, not copied here." -ForegroundColor Yellow
@@ -49,9 +49,9 @@ Write-Host "    claude mcp add playwright -- npx -y @playwright/mcp@latest" -For
 Write-Host "    claude mcp add semgrep -- uvx semgrep-mcp" -ForegroundColor DarkGray
 Write-Host "    (see .mcp.json in this repo for the burp entry to fill in)" -ForegroundColor DarkGray
 Write-Host ""
-Write-Host "  ┌────────────────────────────────────────────────────────┐" -ForegroundColor DarkGreen
-Write-Host "  │  ✓  Installed. Start Claude Code and try:                │" -ForegroundColor Green
-Write-Host "  │     /engage ./my-app  (full engagement, main session)    │" -ForegroundColor Green
-Write-Host "  │     Agent tool -> subagent_type: secreview (one agent)   │" -ForegroundColor Green
-Write-Host "  └────────────────────────────────────────────────────────┘" -ForegroundColor DarkGreen
+Write-Host "  ==========================================================" -ForegroundColor DarkGreen
+Write-Host "  [OK] Installed. Start Claude Code and try:" -ForegroundColor Green
+Write-Host "       /engage ./my-app  (full engagement, main session)" -ForegroundColor Green
+Write-Host "       Agent tool -> subagent_type: secreview (one agent)" -ForegroundColor Green
+Write-Host "  ==========================================================" -ForegroundColor DarkGreen
 Write-Host ""
