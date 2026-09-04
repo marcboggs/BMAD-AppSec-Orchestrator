@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Security Architecture Review: {{COMPONENT_NAME}}</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #161922; --border: #262b38; --text: #e6e8ee;
+    --muted: #9aa3b2; --accent: #5b8def;
+    --crit: #ef4444; --high: #f59e0b; --med: #eab308; --low: #22c55e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 28px; }
+  h1 { font-size: 1.7rem; margin: 0 0 8px; }
+  .meta { color: var(--muted); font-size: 0.9rem; }
+  .meta span { margin-right: 18px; }
+  h2 { font-size: 1.2rem; margin-top: 40px; border-left: 3px solid var(--accent); padding-left: 10px; }
+  section { margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--panel); color: var(--muted); font-weight: 600; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; color: #0f1115; }
+  .sev-critical { background: var(--crit); color: #fff; }
+  .sev-high { background: var(--high); }
+  .sev-medium { background: var(--med); }
+  .sev-low { background: var(--low); }
+  /* Diagram sizing: make Mermaid diagrams fill the width and stay readable.
+     useMaxWidth:false (see init) drops the intrinsic max-width cap; these rules
+     then scale the SVG up to the container instead of rendering it tiny. */
+  .mermaid {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px; margin: 20px 0; text-align: center; overflow-x: auto;
+  }
+  .mermaid svg {
+    width: 100% !important; max-width: 100% !important; height: auto !important;
+    min-height: 320px; display: block; margin: 0 auto;
+  }
+  /* Very wide diagrams (tagged .wide after render) keep a legible scale and
+     scroll horizontally instead of being crushed to fit the column. */
+  .mermaid.wide svg {
+    width: auto !important; max-width: none !important; height: 620px !important; margin: 0;
+  }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin: 14px 0; }
+  code { background: var(--panel); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+  footer { margin-top: 60px; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Security Architecture Review: {{COMPONENT_NAME}}</h1>
+    <div class="meta">
+      <span><strong>Scope:</strong> {{SCOPE_DESCRIPTION}}</span>
+      <span><strong>Date:</strong> {{DATE}}</span>
+      <span><strong>Review type:</strong> {{REVIEW_TYPE}}</span>
+      <span><strong>Framework:</strong> {{FRAMEWORK}}</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. Executive Summary</h2>
+    <div class="card">{{EXEC_SUMMARY}}</div>
+  </section>
+
+  <section>
+    <h2>2. Corroboration Coverage</h2>
+    <table>
+      <tr><th>Source</th><th>Status</th></tr>
+      <tr><td>secreview SAST</td><td>{{SAST_STATUS}}</td></tr>
+      <tr><td>secreview SCA</td><td>{{SCA_STATUS}}</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. Trust-Zone Architecture</h2>
+    <p>{{ARCHITECTURE_DESCRIPTION}}</p>
+    <div class="mermaid">
+{{MERMAID_TRUSTZONE_DIAGRAM}}
+    </div>
+    <h3>High-risk design decision (detail)</h3>
+    <div class="mermaid">
+{{MERMAID_SEQUENCE_DIAGRAM}}
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Trust-Zone & Component Inventory</h2>
+    <table>
+      <tr><th>Zone</th><th>Component</th><th>Purpose</th><th>Trust level</th><th>Notes</th></tr>
+      {{COMPONENT_ROWS}}
+    </table>
+  </section>
+
+  <section>
+    <h2>5. Architecture Risk Register</h2>
+    <table>
+      <tr><th>ID</th><th>Category</th><th>Design weakness</th><th>Framework control</th><th>Corroboration</th><th>Design/Confirmed</th><th>Severity</th><th>Recommended control</th></tr>
+      {{RISK_REGISTER_ROWS}}
+      <!-- Example row (remove once populated):
+      <tr>
+        <td>SA-AUTHZ-001</td><td>Authorization</td>
+        <td>Authz decision made at the gateway, not per-service — internal calls trusted implicitly</td>
+        <td>NIST AC-6 / ASVS 4.1</td>
+        <td>[SR-SAST-014]</td>
+        <td>confirmed in code</td>
+        <td><span class="badge sev-high">High</span></td>
+        <td>Enforce per-service authorization; adopt zero-trust between tiers</td>
+      </tr>
+      -->
+    </table>
+  </section>
+
+  <section>
+    <h2>6. Framework Coverage</h2>
+    <table>
+      <tr><th>Control / Requirement</th><th>Framework</th><th>Assessment</th><th>Related finding</th></tr>
+      {{FRAMEWORK_ROWS}}
+    </table>
+  </section>
+
+  <section>
+    <h2>7. Recommendations (Prioritized)</h2>
+    <div class="card">{{RECOMMENDATIONS}}</div>
+  </section>
+
+  <section>
+    <h2>8. Handoff Notes</h2>
+    <div class="card">{{HANDOFF_NOTES}}</div>
+  </section>
+
+  <section>
+    <h2>9. Assumptions & Out-of-Scope</h2>
+    <div class="card">{{ASSUMPTIONS}}</div>
+  </section>
+
+  <footer>Generated by the security-architecture Kiro agent, corroborated by secreview SAST/SCA output. Feeds threat-model, compliance, and pentest-planner.</footer>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: "dark",
+    themeVariables: { fontSize: "16px" },
+    flowchart: { useMaxWidth: false, htmlLabels: true },
+    sequence: { useMaxWidth: false },
+    gantt: { useMaxWidth: false },
+    pie: { useMaxWidth: false }
+  });
+  // Render, then flag very wide diagrams so they stay legible (larger scale +
+  // horizontal scroll) instead of being shrunk to fit the text column.
+  mermaid.run().then(() => {
+    document.querySelectorAll('.mermaid').forEach(box => {
+      const svg = box.querySelector('svg');
+      if (!svg) return;
+      const vb = (svg.getAttribute('viewBox') || '').split(/\s+/).map(Number);
+      const w = vb[2] || svg.getBBox().width;
+      const h = vb[3] || svg.getBBox().height;
+      if (w && h && (w / h) > 2.2) box.classList.add('wide');
+    });
+  });
+</script>
+</body>
+</html>

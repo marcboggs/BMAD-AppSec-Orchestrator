@@ -1,6 +1,19 @@
-# Security Agent Suite for Kiro CLI
+# Security Agent Suite for Kiro CLI & Claude Code
 
-Ten security-focused Kiro agents orchestrated using the **BMAD methodology** (Breakthrough Method of Agile AI-Driven Development) — specialized personas with structured handoffs, quality gates, and iterative feedback loops across the full security lifecycle.
+Ten security-focused agents orchestrated using the **BMAD methodology** (Breakthrough Method of Agile AI-Driven Development) — specialized personas with structured handoffs, quality gates, and iterative feedback loops across the full security lifecycle.
+
+This suite runs on **both** [Kiro CLI](https://kiro.dev) and [Claude Code](https://claude.com/claude-code). The methodology, agent personas, report schemas, and cross-reference format are identical on both platforms — only the install path and invocation mechanics differ:
+
+| | Kiro CLI | Claude Code |
+|---|---|---|
+| Source | `<agent>/<agent>.json` + `<agent>/prompt.md` per folder | `.claude/agents/*.md` (frontmatter + prompt in one file) |
+| Installs to | `~/.kiro/agents/`, `~/.kiro/skills/` | `~/.claude/agents/`, `~/.claude/skills/`, `~/.claude/commands/` (or project-local `.claude/`, already in this repo) |
+| Switch to an agent | `kiro-cli --agent <name>` | `Agent` tool, `subagent_type: "<name>"` (or let Claude auto-delegate) |
+| BugHunter workflow commands | Skills under `bughunter/skills/commands/` and `bughunter/skills/pentest/` | Slash commands under `.claude/commands/*.md` (`/hunt`, `/triage`, `/chain`, …) |
+| Orchestrator commands | Built into the `security-orchestrator` agent's REPL (`/engage`, `/status`, …) | Slash commands run in the main session: `/engage`, `/status`, `/gate-check`, `/replan`, `/report-all` |
+| Installer | `install-all.ps1` / `.sh` (per-agent, dependency-ordered) | `install-claude.ps1` / `.sh` (single pass — no dependency order needed) |
+
+Jump to: [Kiro CLI setup](#install-all-kiro-cli) · [Claude Code setup](#install-all-claude-code)
 
 ## BMAD Methodology
 
@@ -255,12 +268,18 @@ sequenceDiagram
 
 ## Prerequisites
 
-- [Kiro CLI](https://kiro.dev) installed and configured
+Common to both platforms:
 - Recommended: [Semgrep](https://semgrep.dev) for automated SAST
 - Recommended: [checkov](https://www.checkov.io/) or [trivy](https://trivy.dev/) for IaC scanning
-- Optional: [Burp Suite mcp](https://github.com/marcboggs/Burp-Suite-MCP-for-Kiro-and-Claude), Playwright, and Semgrep MCP servers (for bughunter)
+- Optional: [Burp Suite MCP](https://github.com/marcboggs/Burp-Suite-MCP-for-Kiro-and-Claude), Playwright, and Semgrep MCP servers (for bughunter). The Burp Suite MCP repo ships its own installer that wires the server into **both** Kiro CLI's and Claude Code's MCP config in one step — run it once and both platforms pick it up. For Claude Code specifically, this repo's `.mcp.json` also declares `playwright`/`semgrep`/`burp` server stubs; run the Burp MCP installer (or edit `.mcp.json` directly) to fill in the `burp` entry.
 
-## Install All
+Platform-specific:
+- **Kiro CLI:** [Kiro CLI](https://kiro.dev) installed and configured
+- **Claude Code:** [Claude Code](https://claude.com/claude-code) installed and configured
+
+---
+
+## Install All (Kiro CLI)
 
 ### Windows (PowerShell)
 
@@ -277,7 +296,7 @@ chmod +x install-all.sh
 
 Agents are installed in dependency order — each agent's requirements are satisfied before it installs.
 
-## Install Individually
+### Install Individually (Kiro CLI)
 
 Each agent can be installed separately. Dependencies are checked and auto-installed from sibling directories:
 
@@ -313,7 +332,7 @@ Each agent can be installed separately. Dependencies are checked and auto-instal
 ./pentest-planner/install.sh
 ```
 
-## Quick Start (Orchestrated)
+### Quick Start (Kiro CLI, Orchestrated)
 
 ```bash
 # Start the orchestrator — it handles everything
@@ -325,19 +344,66 @@ kiro-cli --agent secreview
 > review ./src
 ```
 
+---
+
+## Install All (Claude Code)
+
+The `.claude/` directory in this repo already contains everything (10 agents, 54 skills, 19 slash commands) — if you run Claude Code **from this repo**, it's available immediately with no install step, because Claude Code auto-discovers project-local `.claude/agents`, `.claude/skills`, and `.claude/commands`.
+
+To make the suite available in **every** project (not just this repo), install it to your user-level `~/.claude/`:
+
+### Windows (PowerShell)
+
+```powershell
+.\install-claude.ps1
+```
+
+### Linux / macOS (Bash)
+
+```bash
+chmod +x install-claude.sh
+./install-claude.sh
+```
+
+There's no dependency order to worry about — Claude Code subagents can spawn any other subagent that exists in `.claude/agents/` at call time, so nothing needs to be pre-installed before something else.
+
+### Quick Start (Claude Code, Orchestrated)
+
+```
+# Full engagement, with live gate approval in the main session
+/engage ./my-application, scope mywebapp.com
+
+# Check progress / re-evaluate a gate / regenerate the plan / final report
+/status
+/gate-check
+/replan
+/report-all
+
+# Or delegate a single agent directly via the Agent tool
+Agent tool → subagent_type: "secreview" → "review ./src"
+
+# BugHunter's own workflow commands
+/hunt target.com
+/triage
+/chain
+```
+
 ## Directory Structure
 
 ```
 .
 ├── README.md                        ← This file
-├── reports-schema.md                ← BMAD artifact format specification
+├── reports-schema.md                ← BMAD artifact format specification (shared by both platforms)
+├── .mcp.json                        ← Claude Code MCP server config (burp/playwright/semgrep)
+│
+│   Kiro CLI source:
 ├── install-all.ps1                  ← Install all (Windows)
 ├── install-all.sh                   ← Install all (Linux/macOS)
 ├── security-orchestrator/           ← Orchestrator (BMAD coordinator)
 ├── secreview/                       ← Layer 1: Base SAST/SCA agent
 ├── iac-audit/                       ← Layer 1: IaC scanner (standalone)
 ├── bughunter/                       ← Layer 2: Red-team operator
-│   └── skills/                      ← 51 skill folders + 14 commands
+│   └── skills/                      ← 54 skill folders + 14 commands (+ stale `pentest/` duplicate, safe to remove)
 ├── api-spec-review/                 ← Layer 2: API security reviewer
 ├── supply-chain/                    ← Layer 2: Dependency & CI/CD auditor
 ├── security-architecture/           ← Layer 3: Design-level architecture reviewer
@@ -345,23 +411,36 @@ kiro-cli --agent secreview
 ├── threat-model/                    ← Layer 3: STRIDE threat modeler
 │   └── resources/                   ← Templates + STRIDE reference
 ├── compliance/                      ← Layer 4: Regulatory mapper
-└── pentest-planner/                 ← Layer 4: Pentest plan generator
+├── pentest-planner/                 ← Layer 4: Pentest plan generator
+│
+│   Claude Code source:
+├── install-claude.ps1               ← Install all to ~/.claude/ (Windows)
+├── install-claude.sh                ← Install all to ~/.claude/ (Linux/macOS)
+└── .claude/
+    ├── agents/                      ← All 10 agents as single .md files (frontmatter + prompt)
+    │   └── resources/               ← threat-model/ + security-architecture/ templates
+    ├── skills/                      ← Same 54 skills, ported 1:1 (auto-load by semantic match)
+    └── commands/                    ← 19 slash commands: 14 bughunter workflow + 5 orchestrator
 ```
+
+The Kiro folders (`secreview/`, `bughunter/`, etc.) are the canonical **source** for each agent's persona/workflow content — the Claude Code `.claude/agents/*.md` files are a hand-ported copy of the same content in Claude Code's frontmatter format. If you edit an agent's methodology, update both.
 
 ## Individual Agent Docs
 
-- [`security-orchestrator/`](security-orchestrator/) — Engagement lifecycle coordinator
-- [`secreview/README.md`](secreview/README.md) — SAST workflow and output format
-- [`iac-audit/`](iac-audit/) — IaC scanning (Terraform, Docker, K8s)
-- [`bughunter/README.md`](bughunter/README.md) — Full command reference and coverage
-- [`api-spec-review/`](api-spec-review/) — OWASP API Top 10 analysis
-- [`supply-chain/`](supply-chain/) — Dependency, SBOM, and CI/CD security
-- [`security-architecture/`](security-architecture/) — Design-level architecture review (ASVS / Well-Architected / NIST 800-53)
-- [`threat-model/README.md`](threat-model/README.md) — STRIDE workflow and report format
-- [`compliance/`](compliance/) — Regulatory framework mapping
-- [`pentest-planner/`](pentest-planner/) — Pentest plan generation
+- [`security-orchestrator/`](security-orchestrator/) / [`.claude/agents/security-orchestrator.md`](.claude/agents/security-orchestrator.md) — Engagement lifecycle coordinator
+- [`secreview/README.md`](secreview/README.md) / [`.claude/agents/secreview.md`](.claude/agents/secreview.md) — SAST workflow and output format
+- [`iac-audit/`](iac-audit/) / [`.claude/agents/iac-audit.md`](.claude/agents/iac-audit.md) — IaC scanning (Terraform, Docker, K8s)
+- [`bughunter/README.md`](bughunter/README.md) / [`.claude/agents/bughunter.md`](.claude/agents/bughunter.md) — Full command reference and coverage
+- [`api-spec-review/`](api-spec-review/) / [`.claude/agents/api-spec-review.md`](.claude/agents/api-spec-review.md) — OWASP API Top 10 analysis
+- [`supply-chain/`](supply-chain/) / [`.claude/agents/supply-chain.md`](.claude/agents/supply-chain.md) — Dependency, SBOM, and CI/CD security
+- [`security-architecture/`](security-architecture/) / [`.claude/agents/security-architecture.md`](.claude/agents/security-architecture.md) — Design-level architecture review (ASVS / Well-Architected / NIST 800-53)
+- [`threat-model/README.md`](threat-model/README.md) / [`.claude/agents/threat-model.md`](.claude/agents/threat-model.md) — STRIDE workflow and report format
+- [`compliance/`](compliance/) / [`.claude/agents/compliance.md`](.claude/agents/compliance.md) — Regulatory framework mapping
+- [`pentest-planner/`](pentest-planner/) / [`.claude/agents/pentest-planner.md`](.claude/agents/pentest-planner.md) — Pentest plan generation
 
 ## Uninstalling
+
+### Kiro CLI
 
 **Windows:**
 ```powershell
@@ -381,4 +460,29 @@ for agent in security-orchestrator secreview iac-audit bughunter api-spec-review
     rm -rf ~/.kiro/agents/${agent}-resources
 done
 rm -rf ~/.kiro/skills/bughunter
+```
+
+### Claude Code
+
+Only removes what `install-claude.ps1`/`.sh` added to `~/.claude/` — it does not touch this repo's project-local `.claude/`.
+
+**Windows:**
+```powershell
+@("security-orchestrator","secreview","iac-audit","bughunter","api-spec-review",
+  "supply-chain","security-architecture","threat-model","compliance","pentest-planner") | ForEach-Object {
+    Remove-Item "$env:USERPROFILE\.claude\agents\$_.md" -ErrorAction SilentlyContinue
+}
+Remove-Item -Recurse "$env:USERPROFILE\.claude\agents\resources\threat-model" -ErrorAction SilentlyContinue
+Remove-Item -Recurse "$env:USERPROFILE\.claude\agents\resources\security-architecture" -ErrorAction SilentlyContinue
+# Remove the 54 skill folders and 19 command files by name, or diff against .claude/skills and .claude/commands in this repo
+```
+
+**Linux/macOS:**
+```bash
+for agent in security-orchestrator secreview iac-audit bughunter api-spec-review \
+             supply-chain security-architecture threat-model compliance pentest-planner; do
+    rm -f ~/.claude/agents/${agent}.md
+done
+rm -rf ~/.claude/agents/resources/threat-model ~/.claude/agents/resources/security-architecture
+# Remove the 54 skill folders and 19 command files by name, or diff against .claude/skills and .claude/commands in this repo
 ```
