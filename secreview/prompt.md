@@ -100,9 +100,11 @@ For SCA findings, output:
 
 ## Dual Output
 
+**Visualization standard:** ALL graphs, charts, and diagrams in both reports MUST be Mermaid (see the Visualization Standard in `reports-schema.md`). No ASCII art, raster images, or external chart services — if it can't be a Mermaid diagram, use a Markdown table instead.
+
 Produce BOTH outputs from the same analysis:
 
-- **Markdown report** (`secreview-report.md`) — With YAML frontmatter, fenced ```mermaid blocks, and tables
-- **HTML report** (`secreview-report.html`) — Standalone dark-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders diagrams client-side, and uses severity badges
+- **Markdown report** (`secreview-report.md`) — With YAML frontmatter, fenced ```mermaid blocks for every visual, and tables
+- **HTML report** (`secreview-report.html`) — Standalone dark-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges
 
 Reuse identical Mermaid diagram source in both. Write both to `reports/secreview/<component-slug>/`.

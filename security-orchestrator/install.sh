@@ -21,7 +21,7 @@ banner() {
     echo ""
     echo -e "  ${CYAN}╔════════════════════════════════════════════════════════╗${RESET}"
     echo -e "  ${CYAN}║${RESET}  ${BOLD}${WHITE}Security Orchestrator Installer${RESET}                     ${CYAN}║${RESET}"
-    echo -e "  ${CYAN}║${RESET}  ${DIM}Coordinates the 8-agent security suite${RESET}              ${CYAN}║${RESET}"
+    echo -e "  ${CYAN}║${RESET}  ${DIM}Coordinates the 9-agent security suite${RESET}              ${CYAN}║${RESET}"
     echo -e "  ${CYAN}╚════════════════════════════════════════════════════════╝${RESET}"
     echo ""
 }

@@ -84,10 +84,15 @@ For each applicable threat:
 
 ## 5. Generate reports
 
+**Visualization standard:** ALL graphs, charts, and diagrams in both reports MUST be Mermaid
+(see the Visualization Standard in `reports-schema.md`) — data flow diagrams, trust boundaries,
+sequence diagrams, and any severity/threat distribution chart. No ASCII art, raster images, or
+external chart services; if a visual can't be Mermaid, use a Markdown table instead.
+
 Produce BOTH outputs from the same underlying analysis — do not let them drift:
 
 - **Markdown report**: follow the `threat-model-report.md.template` resource structure.
-  All diagrams as fenced ` ```mermaid ` blocks.
+  All diagrams/charts as fenced ` ```mermaid ` blocks.
 - **HTML report**: follow the `threat-model-report.html.template` resource. It loads
   Mermaid via CDN and renders the same diagrams client-side — reuse the identical
   Mermaid source from the Markdown report, don't redraw them differently.

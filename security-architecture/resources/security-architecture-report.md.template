@@ -1,0 +1,152 @@
+---
+title: "Security Architecture Review — {{COMPONENT_NAME}}"
+date: "{{DATE}}"
+scope: "{{SCOPE_DESCRIPTION}}"
+agent: "security-architecture"
+status: "draft"
+engagement_id: "{{ENGAGEMENT_ID}}"
+framework: "{{FRAMEWORK}}"          # e.g. OWASP ASVS L2 | Well-Architected Security Pillar | NIST 800-53
+review_type: "{{REVIEW_TYPE}}"      # pre-implementation | as-built
+severity_summary: { critical: 0, high: 0, medium: 0, low: 0 }
+cross_refs: []
+---
+
+# Security Architecture Review: {{COMPONENT_NAME}}
+
+**Scope:** {{SCOPE_DESCRIPTION}}
+**Date:** {{DATE}}
+**Review type:** {{REVIEW_TYPE}}  (pre-implementation design review vs. as-built assessment)
+**Assessment framework:** {{FRAMEWORK}}
+**Repository / artifact ref:** {{REPO_REF}}
+**Author:** security-architecture agent (secreview-corroborated)
+
+---
+
+## 1. Executive Summary
+
+{{2-4 sentences: what was reviewed, the overall design-security posture, and the top
+2-3 architecture risks that need attention first. Business impact framing preferred.}}
+
+---
+
+## 2. Corroboration Coverage
+
+| Source | Status |
+|---|---|
+| secreview SAST | {{ran / not available / N findings / N/A — proposed design}} |
+| secreview SCA | {{ran / not available / N findings / N/A — proposed design}} |
+
+{{Note any scope secreview could not reach; for a pre-implementation review, state that
+corroboration is N/A because no implementation exists yet.}}
+
+---
+
+## 3. Trust-Zone Architecture
+
+{{Short prose description of the trust zones, where identity is established, where authz
+decisions are made, where secrets/keys live, where sensitive data flows and rests, and
+the blast radius if any single zone is compromised.}}
+
+```mermaid
+flowchart TD
+    subgraph EXT["External / Untrusted"]
+        User[User / Internet]
+    end
+    subgraph EDGE["Zone: Edge / Gateway"]
+        GW[API Gateway / WAF]
+    end
+    subgraph APP["Zone: Application Tier"]
+        Svc[Service]
+    end
+    subgraph DATA["Zone: Data Tier"]
+        DB[(Datastore)]
+        KMS[[KMS / Secrets]]
+    end
+    subgraph MGMT["Zone: Management Plane"]
+        Admin[Admin / CI-CD]
+    end
+    User -->|TLS| GW -->|authn| Svc --> DB
+    Svc -->|fetch secret| KMS
+    Admin -.->|privileged| Svc
+```
+
+### High-risk design decision (detail)
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant G as Gateway
+    participant S as Service
+    participant K as KMS
+    U->>G: Request (TLS)
+    G->>S: Forward (identity asserted)
+    S->>K: Fetch signing key
+    K-->>S: Key (short-lived)
+    S-->>G: Response
+    G-->>U: Response
+```
+
+---
+
+## 4. Trust-Zone & Component Inventory
+
+| Zone | Component | Purpose | Trust level | Notes |
+|---|---|---|---|---|
+| | | | | |
+
+---
+
+## 5. Architecture Risk Register
+
+One row per finding. Category prefixes: SA-AUTHN, SA-AUTHZ, SA-CRYPTO, SA-SECRETS,
+SA-SEGMENT, SA-DEFENSE, SA-EXPOSURE, SA-RESILIENCE, SA-DATA.
+
+| ID | Category | Design weakness | Framework control | Corroboration | Design vs. Confirmed | Severity | Recommended control |
+|---|---|---|---|---|---|---|---|
+| SA-AUTHZ-001 | Authorization | | | | design-level | | |
+
+---
+
+## 6. Framework Coverage
+
+| Control / Requirement | Framework | Assessment | Related finding |
+|---|---|---|---|
+| {{e.g. AC-6 Least Privilege}} | {{NIST 800-53}} | {{met / partial / gap}} | {{[SA-AUTHZ-001]}} |
+
+---
+
+## 7. Recommendations (Prioritized)
+
+1. {{Highest priority — prefer architectural remediation over point fixes}}
+2.
+3.
+
+---
+
+## 8. Handoff Notes
+
+- **→ threat-model:** {{which SA-* findings should anchor which STRIDE areas}}
+- **→ compliance:** {{design-level control gaps to map}}
+- **→ pentest-planner:** {{design weaknesses worth probing during execution}}
+
+---
+
+## 9. Assumptions & Out-of-Scope
+
+- {{Anything assumed rather than verified in an artifact}}
+- {{Anything explicitly out of scope for this pass}}
+
+---
+
+## Quality Gate
+
+| Criterion | Status | Notes |
+|-----------|--------|-------|
+| All trust zones identified | ⏳ Pending | |
+| Every finding maps to a framework control | ⏳ Pending | |
+| Critical/High risks have a recommended control | ⏳ Pending | |
+| secreview corroboration attempted | ⏳ Pending | |
+| Cross-references resolved | ⏳ Pending | |
+
+**Gate Status:** ⏳ PENDING
+**Blocking:** {{what remains}}

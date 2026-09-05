@@ -18,6 +18,11 @@ reports/
 │   └── <component-slug>/
 │       ├── iac-audit-report.md
 │       └── iac-audit-report.html
+├── security-architecture/
+│   └── <component-slug>/
+│       ├── security-architecture-review.md
+│       ├── security-architecture-review.html
+│       └── findings.json
 ├── threat-models/
 │   └── <component-slug>/
 │       ├── threat-model.md
@@ -53,18 +58,86 @@ reports/
 
 ---
 
+## Visualization Standard (Mermaid-Only)
+
+**Mermaid is the single, mandatory visualization format for every report in this suite.**
+
+- **ALL** graphs, charts, diagrams, flows, matrices-as-graphs, timelines, and any other
+  visual representation — in **every** report, from **every** agent — MUST be authored as
+  [Mermaid](https://mermaid.js.org/) diagrams.
+- In Markdown reports, every visual MUST be a fenced ` ```mermaid ` code block.
+- In HTML reports, every visual MUST be a `<div class="mermaid">…</div>` block rendered
+  client-side via the Mermaid CDN. Reuse the **identical** Mermaid source from the Markdown
+  report — never redraw, rasterize, or simplify.
+- Use the appropriate Mermaid diagram type for the content, for example:
+  - `graph` / `flowchart` — architecture, trust zones, data flow, dependency graphs, attack chains
+  - `sequenceDiagram` — auth flows, request/response, exploit steps, agent handoffs
+  - `pie` — severity/finding distribution and other proportional charts
+  - `gantt` — pentest timelines and remediation roadmaps
+  - `stateDiagram-v2` — lifecycle/state transitions
+  - `mindmap` / `timeline` — attack-surface breakdowns, engagement timelines
+- **Prohibited:** ASCII/box-drawing diagrams, embedded raster images (PNG/JPG/GIF/SVG) used
+  as diagrams or charts, screenshots of charts, external chart-image services, or any other
+  non-Mermaid rendering of a graph/chart/diagram. (Screenshots that are *evidence* — e.g., a
+  bughunter PoC screenshot of an exploited page — are not diagrams and are exempt; do not use
+  them to convey structured data that belongs in a Mermaid diagram.)
+- If a visual genuinely cannot be expressed in Mermaid, present the information as a Markdown
+  table instead — do not fall back to a non-Mermaid image or ASCII art.
+
+This rule is authoritative. Any agent-specific instruction that appears more permissive is
+overridden by this section.
+
+---
+
 ## Dual Output: Markdown + Standalone HTML
 
 Every agent MUST produce **both** a Markdown report and a standalone HTML report from the same underlying analysis:
 
-1. **Markdown (`.md`)** — Primary artifact with YAML frontmatter, fenced ` ```mermaid ` blocks, and standard tables. Used for cross-referencing by other agents and version control diffs.
+1. **Markdown (`.md`)** — Primary artifact with YAML frontmatter, fenced ` ```mermaid ` blocks for **all** visuals (see Visualization Standard above), and standard tables. Used for cross-referencing by other agents and version control diffs.
 
-2. **HTML (`.html`)** — Self-contained standalone report that loads Mermaid via CDN and renders all diagrams client-side. Uses a dark theme. Suitable for sharing with stakeholders who don't have Markdown renderers.
+2. **HTML (`.html`)** — Self-contained standalone report that loads Mermaid via CDN and renders **all** diagrams/charts client-side. Uses a dark theme. Suitable for sharing with stakeholders who don't have Markdown renderers.
 
 ### HTML Report Requirements
 
 - Load Mermaid from `https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`
-- Initialize with `mermaid.initialize({ startOnLoad: true, theme: "dark" })`
+- Initialize with diagram scaling enabled so diagrams render large and readable — do **not** use the bare `mermaid.initialize({ startOnLoad: true, theme: "dark" })`. Disable Mermaid's intrinsic width cap, then render with `mermaid.run()` and tag very wide diagrams so they stay legible (see next bullet):
+  ```html
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "dark",
+      themeVariables: { fontSize: "16px" },
+      flowchart: { useMaxWidth: false, htmlLabels: true },
+      sequence: { useMaxWidth: false },
+      gantt: { useMaxWidth: false },
+      pie: { useMaxWidth: false }
+    });
+    // Render, then flag very wide diagrams so they stay legible (larger scale +
+    // horizontal scroll) instead of being shrunk to fit the text column.
+    mermaid.run().then(() => {
+      document.querySelectorAll('.mermaid').forEach(box => {
+        const svg = box.querySelector('svg');
+        if (!svg) return;
+        const vb = (svg.getAttribute('viewBox') || '').split(/\s+/).map(Number);
+        const w = vb[2] || svg.getBBox().width;
+        const h = vb[3] || svg.getBBox().height;
+        if (w && h && (w / h) > 2.2) box.classList.add('wide');
+      });
+    });
+  </script>
+  ```
+- Include the `.mermaid` sizing CSS so diagrams fill the container width instead of rendering tiny (Mermaid otherwise keeps the SVG at its small intrinsic size). Normal-aspect diagrams fill the width; the `.mermaid.wide` rule keeps very wide diagrams at a legible scale and lets them scroll horizontally rather than being crushed to fit the column:
+  ```css
+  .mermaid { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px; margin: 20px 0; text-align: center; overflow-x: auto; }
+  .mermaid svg { width: 100% !important; max-width: 100% !important; height: auto !important;
+    min-height: 320px; display: block; margin: 0 auto; }
+  /* Very wide diagrams (tagged .wide after render) scroll instead of shrinking. */
+  .mermaid.wide svg { width: auto !important; max-width: none !important;
+    height: 620px !important; margin: 0; }
+  ```
+- Prefer top-down (`flowchart TB`) layouts and keep node/edge label text short — extremely wide diagrams are hard to read even with the `.wide` fallback. If a diagram is very wide because of many side-by-side trust zones, consider splitting it into multiple focused diagrams.
+- Render **every** graph/chart/diagram as a `<div class="mermaid">` block — no raster images, ASCII art, or external chart services (see Visualization Standard)
 - **Reuse identical Mermaid source** from the Markdown report — do not redraw or simplify diagrams
 - Use severity badge styling: `.sev-critical`, `.sev-high`, `.sev-medium`, `.sev-low`
 - Include report metadata in header (agent, scope, date)
@@ -126,6 +199,7 @@ Agents cite each other's findings using bracket notation with a standardized ID 
 |-------|--------|---------|
 | secreview | `SR` | `[SR-SAST-003]` |
 | iac-audit | `IA` | `[IA-MISC-012]` |
+| security-architecture | `SA` | `[SA-AUTHZ-001]` |
 | threat-model | `TM` | `[TM-STRIDE-007]` |
 | api-spec-review | `API` | `[API-BOLA-001]` |
 | supply-chain | `SC` | `[SC-DEP-005]` |
@@ -139,6 +213,7 @@ Agents cite each other's findings using bracket notation with a standardized ID 
 |-------|-----------|
 | secreview | `SAST`, `SCA`, `DAST` |
 | iac-audit | `MISC` (misconfiguration), `CIS`, `NET`, `IAM`, `ENC` |
+| security-architecture | `AUTHN`, `AUTHZ`, `CRYPTO`, `SECRETS`, `SEGMENT`, `DEFENSE`, `EXPOSURE`, `RESILIENCE`, `DATA` |
 | threat-model | `STRIDE` (single), `SPOOF`, `TAMPER`, `REPUD`, `INFO`, `DOS`, `ELEV` |
 | api-spec-review | `BOLA`, `BFLA`, `INJECT`, `MASS`, `SSRF`, `RATE`, `AUTH` |
 | supply-chain | `DEP`, `TYPO`, `CICD`, `SBOM` |

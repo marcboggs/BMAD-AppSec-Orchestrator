@@ -1,0 +1,108 @@
+# Threat Model: {{COMPONENT_NAME}}
+
+**Scope:** {{SCOPE_DESCRIPTION}}
+**Date:** {{DATE}}
+**Repository / commit:** {{REPO_REF}}
+**Author:** threat-model agent (secreview-informed)
+
+---
+
+## 1. Executive Summary
+
+{{2-4 sentences: what was modeled, the overall risk posture, and the top 2-3 findings
+that need attention first.}}
+
+---
+
+## 2. Scan Coverage
+
+| Source | Status |
+|---|---|
+| secreview SAST | {{ran / not available / N findings}} |
+| secreview SCA | {{ran / not available / N findings}} |
+
+{{Note any scope secreview could not reach, timeouts, or partial coverage.}}
+
+---
+
+## 3. Architecture & Data Flow
+
+{{Short prose description of components and trust boundaries.}}
+
+```mermaid
+flowchart TD
+    subgraph "External / Untrusted"
+        User[User]
+    end
+    subgraph "Trust Boundary: Edge"
+        API[API Gateway]
+    end
+    subgraph "Trust Boundary: App"
+        Svc[Service]
+    end
+    subgraph "Trust Boundary: Data"
+        DB[(Database)]
+    end
+    User -->|HTTPS| API --> Svc --> DB
+```
+
+### High-risk flow detail
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as API
+    participant S as Service
+    participant D as Database
+    U->>A: Request
+    A->>S: Forward (authn checked)
+    S->>D: Query
+    D-->>S: Result
+    S-->>A: Response
+    A-->>U: Response
+```
+
+---
+
+## 4. Component Inventory
+
+| Component | Purpose | Trust boundary | Notes |
+|---|---|---|---|
+| | | | |
+
+---
+
+## 5. STRIDE Threat Matrix
+
+| # | Component/Flow | STRIDE | Threat | secreview finding | Severity | Mitigation |
+|---|---|---|---|---|---|---|
+| T1 | | | | | | |
+
+---
+
+## 6. secreview Findings Detail
+
+### SAST
+
+| ID | CWE | Severity | File:Line | Description |
+|---|---|---|---|---|
+
+### SCA
+
+| ID | Package | CVE | Severity | Direct/Transitive | Description |
+|---|---|---|---|---|---|
+
+---
+
+## 7. Recommendations (Prioritized)
+
+1. {{Highest priority, tied to Critical/High rows above}}
+2.
+3.
+
+---
+
+## 8. Assumptions & Out-of-Scope
+
+- {{Anything assumed rather than verified in code}}
+- {{Anything explicitly out of scope for this pass}}

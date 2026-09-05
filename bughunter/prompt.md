@@ -107,9 +107,11 @@ Only test assets the user owns or has written authorization to assess (bug-bount
 
 ## Dual Output
 
+**Visualization standard:** ALL graphs, charts, and diagrams in both reports MUST be Mermaid (see the Visualization Standard in `reports-schema.md`). Exploit chains (A→B→C) and attack flows use Mermaid `graph`/`sequenceDiagram` — no ASCII art, raster images, or external chart services. If it can't be a Mermaid diagram, use a Markdown table instead. (PoC evidence screenshots are not diagrams and remain allowed — but don't use a screenshot to convey structured data that belongs in a Mermaid diagram.)
+
 Produce BOTH outputs from the same analysis:
 
-- **Markdown report** (`findings.md`) — With YAML frontmatter, fenced ```mermaid blocks, and tables
-- **HTML report** (`findings.html`) — Standalone dark-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders diagrams client-side, and uses severity badges
+- **Markdown report** (`findings.md`) — With YAML frontmatter, fenced ```mermaid blocks for every visual, and tables
+- **HTML report** (`findings.html`) — Standalone dark-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges
 
 Reuse identical Mermaid diagram source in both. Write both to `reports/bughunter/<component-slug>/`.

@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "semgrep": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["semgrep-mcp"]
+    },
+    "burp": {
+      "type": "stdio",
+      "command": "REPLACE_ME",
+      "args": ["REPLACE_ME"],
+      "_comment": "Don't hand-fill this. Run the installer from https://github.com/marcboggs/Burp-Suite-MCP-for-Kiro-and-Claude — it writes the burp MCP entry into both Kiro CLI's config AND this file (or your ~/.claude.json) for Claude Code in one pass. Only edit this by hand if you're not using that installer."
+    }
+  }
+}
