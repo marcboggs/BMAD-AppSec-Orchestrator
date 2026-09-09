@@ -15,6 +15,7 @@
 $ErrorActionPreference = "Stop"
 $ScriptDir   = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ClaudeHome  = Join-Path $env:USERPROFILE ".claude"
+. (Join-Path $ScriptDir "lib\preflight.ps1")
 
 Write-Host ""
 Write-Host "  ==========================================================" -ForegroundColor Magenta
@@ -22,6 +23,8 @@ Write-Host "   Security Agent Suite for Claude Code" -ForegroundColor Magenta
 Write-Host "   10 agents / 54 skills / 19 commands (user-level)" -ForegroundColor Magenta
 Write-Host "  ==========================================================" -ForegroundColor Magenta
 Write-Host ""
+
+Invoke-Preflight
 
 $AgentsDst   = Join-Path $ClaudeHome "agents"
 $SkillsDst   = Join-Path $ClaudeHome "skills"

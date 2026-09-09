@@ -277,6 +277,8 @@ Platform-specific:
 - **Kiro CLI:** [Kiro CLI](https://kiro.dev) installed and configured
 - **Claude Code:** [Claude Code](https://claude.com/claude-code) installed and configured
 
+> The `install-all` and `install-claude` scripts run a **preflight check** for these runtime tools (`node`/`npx`, `uv`/`uvx`, `semgrep`, `git`) and print what's missing with install hints. Missing tools are warnings, not errors — the install still completes, since these are only needed when the agents actually run.
+
 ---
 
 ## Install All (Kiro CLI)
@@ -396,9 +398,12 @@ Agent tool → subagent_type: "secreview" → "review ./src"
 ├── reports-schema.md                ← BMAD artifact format specification (shared by both platforms)
 ├── .mcp.json                        ← Claude Code MCP server config (burp/playwright/semgrep)
 │
+│   lib/preflight.sh / .ps1          ← Runtime-prerequisite check (sourced by installers)
+│
 │   Kiro CLI source:
 ├── install-all.ps1                  ← Install all (Windows)
 ├── install-all.sh                   ← Install all (Linux/macOS)
+├── uninstall-all.ps1 / .sh          ← Uninstall all Kiro agents (--dry-run / --yes)
 ├── security-orchestrator/           ← Orchestrator (BMAD coordinator)
 ├── secreview/                       ← Layer 1: Base SAST/SCA agent
 ├── iac-audit/                       ← Layer 1: IaC scanner (standalone)
@@ -416,6 +421,7 @@ Agent tool → subagent_type: "secreview" → "review ./src"
 │   Claude Code source:
 ├── install-claude.ps1               ← Install all to ~/.claude/ (Windows)
 ├── install-claude.sh                ← Install all to ~/.claude/ (Linux/macOS)
+├── uninstall-claude.ps1 / .sh       ← Remove suite files from ~/.claude/ (--dry-run / --yes)
 └── .claude/
     ├── agents/                      ← All 10 agents as single .md files (frontmatter + prompt)
     │   └── resources/               ← threat-model/ + security-architecture/ templates
@@ -440,49 +446,32 @@ The Kiro folders (`secreview/`, `bughunter/`, etc.) are the canonical **source**
 
 ## Uninstalling
 
+Each target ships an uninstaller that removes **only** what its installer added, computed live from this repo — your own agents/skills/commands in the shared directories are left untouched, and the directories themselves are never deleted. Both support `--dry-run` (list what would be removed, change nothing) and `--yes` (skip the confirmation prompt).
+
 ### Kiro CLI
+
+Removes `~/.kiro/agents/<name>.json`, `~/.kiro/agents/<name>-resources/`, and `~/.kiro/skills/<name>/` for all 10 agents.
 
 **Windows:**
 ```powershell
-@("security-orchestrator","secreview","iac-audit","bughunter","api-spec-review",
-  "supply-chain","security-architecture","threat-model","compliance","pentest-planner") | ForEach-Object {
-    Remove-Item "$env:USERPROFILE\.kiro\agents\$_.json" -ErrorAction SilentlyContinue
-    Remove-Item -Recurse "$env:USERPROFILE\.kiro\agents\$_-resources" -ErrorAction SilentlyContinue
-}
-Remove-Item -Recurse "$env:USERPROFILE\.kiro\skills\bughunter" -ErrorAction SilentlyContinue
+.\uninstall-all.ps1              # or: .\uninstall-all.ps1 -DryRun / -Yes
 ```
 
 **Linux/macOS:**
 ```bash
-for agent in security-orchestrator secreview iac-audit bughunter api-spec-review \
-             supply-chain security-architecture threat-model compliance pentest-planner; do
-    rm -f ~/.kiro/agents/${agent}.json
-    rm -rf ~/.kiro/agents/${agent}-resources
-done
-rm -rf ~/.kiro/skills/bughunter
+./uninstall-all.sh               # or: ./uninstall-all.sh --dry-run / --yes
 ```
 
 ### Claude Code
 
-Only removes what `install-claude.ps1`/`.sh` added to `~/.claude/` — it does not touch this repo's project-local `.claude/`.
+Removes only what `install-claude.ps1`/`.sh` added to `~/.claude/` — it does not touch this repo's project-local `.claude/`, your own files in `~/.claude/`, or MCP server config.
 
 **Windows:**
 ```powershell
-@("security-orchestrator","secreview","iac-audit","bughunter","api-spec-review",
-  "supply-chain","security-architecture","threat-model","compliance","pentest-planner") | ForEach-Object {
-    Remove-Item "$env:USERPROFILE\.claude\agents\$_.md" -ErrorAction SilentlyContinue
-}
-Remove-Item -Recurse "$env:USERPROFILE\.claude\agents\resources\threat-model" -ErrorAction SilentlyContinue
-Remove-Item -Recurse "$env:USERPROFILE\.claude\agents\resources\security-architecture" -ErrorAction SilentlyContinue
-# Remove the 54 skill folders and 19 command files by name, or diff against .claude/skills and .claude/commands in this repo
+.\uninstall-claude.ps1           # or: .\uninstall-claude.ps1 -DryRun / -Yes
 ```
 
 **Linux/macOS:**
 ```bash
-for agent in security-orchestrator secreview iac-audit bughunter api-spec-review \
-             supply-chain security-architecture threat-model compliance pentest-planner; do
-    rm -f ~/.claude/agents/${agent}.md
-done
-rm -rf ~/.claude/agents/resources/threat-model ~/.claude/agents/resources/security-architecture
-# Remove the 54 skill folders and 19 command files by name, or diff against .claude/skills and .claude/commands in this repo
+./uninstall-claude.sh            # or: ./uninstall-claude.sh --dry-run / --yes
 ```
