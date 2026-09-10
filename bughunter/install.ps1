@@ -2,8 +2,10 @@
 .SYNOPSIS
     Installs the bughunter Kiro agent.
 .DESCRIPTION
-    Bug bounty / red-team operator with 51 skills and 14 commands.
+    Bug bounty / red-team operator with 86 skills, 14 commands, a deterministic
+    engagement engine, the kbh CLI, and the disclosed-report pattern library.
     REQUIRES: secreview (spawned as subagent for SAST/SCA).
+    OPTIONAL: Python 3.9+ on PATH to run the engine / kbh CLI.
 #>
 
 $ErrorActionPreference = "Stop"
@@ -123,6 +125,40 @@ if (Test-Path $SkillsSrc) {
     Copy-Item -Path "$SkillsSrc\*" -Destination $SkillsDir -Recurse -Force
     $skillCount = (Get-ChildItem -Path $SkillsDir -Directory).Count
     Write-Success "Skills  → ~\.kiro\skills\$AgentName\ ($skillCount folders)"
+}
+
+# ─── Engine + kbh CLI + disclosed-report library ───────────────────────────────
+# These install into the agent's resources dir so the agent is self-contained and
+# the engine/CLI can be run directly (they need Python 3.9+ on PATH).
+Write-Step "Installing engine, kbh CLI, and report library..."
+foreach ($item in @("engine", "kbh", "scripts", "disclosed-reports")) {
+    $src = Join-Path $ScriptDir $item
+    if (Test-Path $src) {
+        $dest = Join-Path $ResourcesDir $item
+        if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+        Copy-Item -Path $src -Destination $dest -Recurse -Force
+        Write-Success "$item  → ~\.kiro\agents\$AgentName-resources\$item\"
+    }
+}
+$pyproject = Join-Path $ScriptDir "pyproject.toml"
+if (Test-Path $pyproject) {
+    Copy-Item -Path $pyproject -Destination (Join-Path $ResourcesDir "pyproject.toml") -Force
+    Write-Success "pyproject.toml  → ~\.kiro\agents\$AgentName-resources\"
+}
+
+# Python availability note (engine/CLI are optional — the agent works without them)
+$python = $null
+foreach ($cand in @("python", "python3", "py")) {
+    $found = Get-Command $cand -ErrorAction SilentlyContinue
+    if ($found) { $python = $found; break }
+}
+if ($python) {
+    Write-Info "Python detected ($($python.Source)) — engine & kbh CLI are runnable"
+    Write-Info "Engine:  python `"$ResourcesDir\engine\engine.py`" --scope <scope.json> --mock"
+    Write-Info "CLI:     python -m kbh.cli --help   (from $ResourcesDir)"
+} else {
+    Write-Warn "Python 3.9+ not found on PATH — install it to run the engine / kbh CLI"
+    Write-Info "The bughunter agent itself works without Python; only the engine/CLI need it"
 }
 
 Write-Footer

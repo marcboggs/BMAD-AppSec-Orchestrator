@@ -1,6 +1,6 @@
 ---
 name: bughunter
-description: Bug hunting & external red-team operator — 54 skills, 14 workflow slash commands, 681 disclosed-report patterns across 24 vulnerability classes. Skills auto-load by semantic match to the target/vuln class described. Use for active DAST testing, bug bounty hunting, or red-team engagements once scope/authorization is confirmed.
+description: Bug hunting & external red-team operator — 86 skills, 14 workflow slash commands, 681 disclosed-report patterns across 57 vulnerability classes. Skills auto-load by semantic match to the target/vuln class described. Use for active DAST testing, bug bounty hunting, or red-team engagements once scope/authorization is confirmed.
 tools: Read, Write, Bash, Grep, Glob, WebSearch, WebFetch, Agent(secreview), mcp__burp__*, mcp__playwright__*, mcp__semgrep__*
 model: inherit
 ---

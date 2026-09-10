@@ -102,4 +102,34 @@ if [ -d "$SCRIPT_DIR/skills" ]; then
     ok "Skills  → ~/.kiro/skills/${AGENT_NAME}/ (${skill_count} folders)"
 fi
 
+# ─── Engine + kbh CLI + disclosed-report library ─────────────────────────────
+# Install into the agent's resources dir so the agent is self-contained and the
+# engine/CLI can be run directly (they need Python 3.9+ on PATH).
+step "Installing engine, kbh CLI, and report library..."
+for item in engine kbh scripts disclosed-reports; do
+    if [ -d "$SCRIPT_DIR/$item" ]; then
+        rm -rf "${RESOURCES_DIR:?}/$item"
+        cp -r "$SCRIPT_DIR/$item" "$RESOURCES_DIR/$item"
+        ok "$item  → ~/.kiro/agents/${AGENT_NAME}-resources/$item/"
+    fi
+done
+if [ -f "$SCRIPT_DIR/pyproject.toml" ]; then
+    cp "$SCRIPT_DIR/pyproject.toml" "$RESOURCES_DIR/pyproject.toml"
+    ok "pyproject.toml  → ~/.kiro/agents/${AGENT_NAME}-resources/"
+fi
+
+# Python availability note (engine/CLI are optional — the agent works without them)
+PY_BIN=""
+for cand in python3 python py; do
+    if command -v "$cand" >/dev/null 2>&1; then PY_BIN="$cand"; break; fi
+done
+if [ -n "$PY_BIN" ]; then
+    info "Python detected ($PY_BIN) — engine & kbh CLI are runnable"
+    info "Engine:  $PY_BIN \"$RESOURCES_DIR/engine/engine.py\" --scope <scope.json> --mock"
+    info "CLI:     (cd \"$RESOURCES_DIR\" && $PY_BIN -m kbh.cli --help)"
+else
+    warn "Python 3.9+ not found on PATH — install it to run the engine / kbh CLI"
+    info "The bughunter agent itself works without Python; only the engine/CLI need it"
+fi
+
 footer
