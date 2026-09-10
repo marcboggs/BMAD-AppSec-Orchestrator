@@ -3,7 +3,7 @@
 # Installs the Security Agent Suite for Claude Code (user-level).
 #
 # Copies .claude/agents, .claude/skills, and .claude/commands from this repo
-# into ~/.claude/, so the 10 agents, 54 skills, and 19 slash commands are
+# into ~/.claude/, so the 10 agents, 86 skills, and 19 slash commands are
 # available in every Claude Code project, not just this one.
 #
 # Unlike the old Kiro installers, there is no dependency order to respect —
@@ -24,7 +24,7 @@ BOLD='\033[1m'; DIM='\033[2m'; CYAN='\033[36m'; GREEN='\033[32m'; YELLOW='\033[3
 echo ""
 echo -e "  ${CYAN}┌────────────────────────────────────────────────────────┐${RESET}"
 echo -e "  ${CYAN}│${RESET}   🔐  ${BOLD}Security Agent Suite for Claude Code${RESET}                ${CYAN}│${RESET}"
-echo -e "  ${CYAN}│${RESET}   10 agents · 54 skills · 19 commands (user-level)      ${CYAN}│${RESET}"
+echo -e "  ${CYAN}│${RESET}   10 agents · 86 skills · 19 commands (user-level)      ${CYAN}│${RESET}"
 echo -e "  ${CYAN}└────────────────────────────────────────────────────────┘${RESET}"
 echo ""
 

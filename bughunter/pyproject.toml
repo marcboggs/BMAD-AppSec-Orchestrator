@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kiro-bughunter"
+version = "2.1.0"
+description = "kbh — terminal-native recon/classify/triage/report runner for the Kiro BugHunter agent"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Sachin Sharma" }]
+keywords = ["security", "bug-bounty", "recon", "kiro", "pentest"]
+dependencies = []
+
+[project.optional-dependencies]
+# `requests` is optional — kbh falls back to urllib when it's absent.
+http = ["requests"]
+
+[project.urls]
+Homepage = "https://github.com/elementalsouls/Claude-BugHunter"
+Documentation = "https://github.com/elementalsouls/Claude-BugHunter/blob/main/docs/cbh-cli.md"
+
+[project.scripts]
+kbh = "kbh.cli:main"
+
+[tool.setuptools]
+packages = ["kbh"]
+
+[tool.setuptools.package-data]
+kbh = ["data/*.json"]

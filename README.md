@@ -350,7 +350,7 @@ kiro-cli --agent secreview
 
 ## Install All (Claude Code)
 
-The `.claude/` directory in this repo already contains everything (10 agents, 54 skills, 19 slash commands) — if you run Claude Code **from this repo**, it's available immediately with no install step, because Claude Code auto-discovers project-local `.claude/agents`, `.claude/skills`, and `.claude/commands`.
+The `.claude/` directory in this repo already contains everything (10 agents, 86 skills, 19 slash commands) — if you run Claude Code **from this repo**, it's available immediately with no install step, because Claude Code auto-discovers project-local `.claude/agents`, `.claude/skills`, and `.claude/commands`.
 
 To make the suite available in **every** project (not just this repo), install it to your user-level `~/.claude/`:
 
