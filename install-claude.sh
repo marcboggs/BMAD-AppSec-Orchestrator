@@ -16,6 +16,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_HOME="$HOME/.claude"
 
+# shellcheck source=lib/preflight.sh
+source "$SCRIPT_DIR/lib/preflight.sh"
+
 BOLD='\033[1m'; DIM='\033[2m'; CYAN='\033[36m'; GREEN='\033[32m'; YELLOW='\033[33m'; RESET='\033[0m'
 
 echo ""
@@ -24,6 +27,8 @@ echo -e "  ${CYAN}│${RESET}   🔐  ${BOLD}Security Agent Suite for Claude Cod
 echo -e "  ${CYAN}│${RESET}   10 agents · 54 skills · 19 commands (user-level)      ${CYAN}│${RESET}"
 echo -e "  ${CYAN}└────────────────────────────────────────────────────────┘${RESET}"
 echo ""
+
+run_preflight
 
 mkdir -p "$CLAUDE_HOME/agents" "$CLAUDE_HOME/skills" "$CLAUDE_HOME/commands"
 

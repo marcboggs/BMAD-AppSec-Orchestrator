@@ -7,6 +7,7 @@
 
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+. (Join-Path $ScriptDir "lib\preflight.ps1")
 
 function Write-Banner {
     $border = "─" * 52
@@ -58,6 +59,7 @@ function Write-Summary {
 }
 
 Write-Banner
+Invoke-Preflight
 
 # Layer 0: Orchestrator (no dependencies)
 Write-Phase 1 10 "Security Orchestrator"

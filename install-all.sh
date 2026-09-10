@@ -8,6 +8,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# shellcheck source=lib/preflight.sh
+source "$SCRIPT_DIR/lib/preflight.sh"
+
 BOLD='\033[1m' DIM='\033[2m' CYAN='\033[36m' GREEN='\033[32m' MAGENTA='\033[35m' RESET='\033[0m'
 
 banner() {
@@ -57,6 +60,7 @@ summary() {
 }
 
 banner
+run_preflight
 
 # Orchestrator: No dependencies
 phase 1 10 "Security Orchestrator"
