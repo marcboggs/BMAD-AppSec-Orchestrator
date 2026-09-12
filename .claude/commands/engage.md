@@ -70,7 +70,7 @@ Invoke `subagent_type: "pentest-planner"`. Send the resulting plan to `subagent_
 
 ## Phase 5 — Execute
 
-Invoke `subagent_type: "bughunter"` with the approved plan. Only test in-scope items; stop immediately on unexpected access or data exposure.
+Invoke `subagent_type: "bughunter"` with the approved plan. **Tell bughunter explicitly whether source code is available** (it picks black-box vs. whitebox from this): pass the source path(s) from `targets.directories`, the URL targets from `targets.urls`, and note that a secreview report already exists at `reports/secreview/` — instruct it to **reuse that report and NOT re-run secreview**, and to read the source directly to craft precise PoCs. If source is not in scope, say so explicitly so it proceeds black-box. Only test in-scope items; stop immediately on unexpected access or data exposure.
 
 **Gate:** every finding has repro steps, confirmed severity, false positives excluded, PoC attached. Feed validated findings back into `subagent_type: "threat-model"` for a model update.
 

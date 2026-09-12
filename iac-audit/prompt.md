@@ -139,6 +139,6 @@ Report structure:
 Produce BOTH outputs from the same analysis:
 
 - **Markdown report** (`iac-audit-report.md`) — With YAML frontmatter, fenced ```mermaid blocks for every visual, and tables
-- **HTML report** (`iac-audit-report.html`) — Standalone dark-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges (`.sev-critical`, `.sev-high`, `.sev-medium`, `.sev-low`)
+- **HTML report** (`iac-audit-report.html`) — Standalone light-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges (`.sev-critical`, `.sev-high`, `.sev-medium`, `.sev-low`)
 
 Reuse identical Mermaid diagram source in both. Write both to `reports/iac-audit/<component-slug>/`.

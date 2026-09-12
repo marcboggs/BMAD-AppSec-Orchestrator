@@ -136,6 +136,21 @@ If incomplete, loop back: invoke security-architecture and/or threat-model again
 **Agent Invocation Order:**
 1. **bughunter** — Execute approved test plan against targets
 
+**Pass source-code context to bughunter (REQUIRED).** bughunter chooses black-box vs. whitebox based on whether source is available, so you MUST tell it explicitly in the invocation prompt:
+- Whether source code is available, and the exact source path(s) from `targets.directories` in the engagement manifest.
+- That secreview has **already run** in the DISCOVER phase and its report is at `reports/secreview/` — instruct bughunter to **reuse that report and NOT re-spawn secreview**.
+- The URL/endpoint targets from `targets.urls` for the dynamic testing itself.
+
+Example invocation prompt:
+```
+Execute the approved pentest plan against <targets.urls>.
+Source code IS available at <targets.directories> — run in whitebox mode:
+read the relevant source directly to craft precise PoCs.
+A secreview SAST/SCA report already exists at reports/secreview/<slug>/ —
+reuse it (sinks, endpoint map, DAST payloads) and do NOT re-run secreview.
+```
+If source is NOT in scope (URL-only engagement), state that explicitly so bughunter proceeds black-box.
+
 **Constraints:**
 - Only test within approved scope
 - Stop on unexpected access or data exposure; report immediately

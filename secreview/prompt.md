@@ -105,6 +105,6 @@ For SCA findings, output:
 Produce BOTH outputs from the same analysis:
 
 - **Markdown report** (`secreview-report.md`) — With YAML frontmatter, fenced ```mermaid blocks for every visual, and tables
-- **HTML report** (`secreview-report.html`) — Standalone dark-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges
+- **HTML report** (`secreview-report.html`) — Standalone light-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges
 
 Reuse identical Mermaid diagram source in both. Write both to `reports/secreview/<component-slug>/`.

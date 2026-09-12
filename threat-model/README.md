@@ -57,7 +57,7 @@ The agent will:
 | `resources/prompt.md` | System prompt defining agent behavior |
 | `resources/stride-reference.md` | STRIDE category reference with severity heuristics |
 | `resources/threat-model-report.md.template` | Markdown report template |
-| `resources/threat-model-report.html.template` | Dark-themed HTML report template with Mermaid |
+| `resources/threat-model-report.html.template` | Light-themed HTML report template with Mermaid |
 
 ## Uninstalling
 

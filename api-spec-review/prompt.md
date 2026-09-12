@@ -126,6 +126,6 @@ Report structure:
 Produce BOTH outputs from the same analysis:
 
 - **Markdown report** (`api-security-report.md`) — With YAML frontmatter, fenced ```mermaid blocks for every visual, and tables
-- **HTML report** (`api-security-report.html`) — Standalone dark-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges
+- **HTML report** (`api-security-report.html`) — Standalone light-themed HTML that loads Mermaid via CDN (`https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`), renders every diagram/chart client-side, and uses severity badges
 
 Reuse identical Mermaid diagram source in both. Write both to `reports/api-spec-review/<api-slug>/`.

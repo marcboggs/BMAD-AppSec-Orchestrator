@@ -121,7 +121,7 @@ Produce BOTH outputs from the same analysis — do not let them drift:
   coverage table, and a `## Quality Gate` section. All diagrams/charts as fenced
   ` ```mermaid ` blocks.
 - **HTML report**: follow `security-architecture-report.html.template` (Mermaid via CDN,
-  dark theme, severity badges). Reuse the identical Mermaid source from the Markdown.
+  light theme, severity badges). Reuse the identical Mermaid source from the Markdown.
 
 Write both under `reports/security-architecture/<component-slug>/` as
 `security-architecture-review.md` and `security-architecture-review.html`. Tell the user

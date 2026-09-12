@@ -95,17 +95,17 @@ Every agent MUST produce **both** a Markdown report and a standalone HTML report
 
 1. **Markdown (`.md`)** — Primary artifact with YAML frontmatter, fenced ` ```mermaid ` blocks for **all** visuals (see Visualization Standard above), and standard tables. Used for cross-referencing by other agents and version control diffs.
 
-2. **HTML (`.html`)** — Self-contained standalone report that loads Mermaid via CDN and renders **all** diagrams/charts client-side. Uses a dark theme. Suitable for sharing with stakeholders who don't have Markdown renderers.
+2. **HTML (`.html`)** — Self-contained standalone report that loads Mermaid via CDN and renders **all** diagrams/charts client-side. Uses a light theme. Suitable for sharing with stakeholders who don't have Markdown renderers.
 
 ### HTML Report Requirements
 
 - Load Mermaid from `https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js`
-- Initialize with diagram scaling enabled so diagrams render large and readable — do **not** use the bare `mermaid.initialize({ startOnLoad: true, theme: "dark" })`. Disable Mermaid's intrinsic width cap, then render with `mermaid.run()` and tag very wide diagrams so they stay legible (see next bullet):
+- Initialize with diagram scaling enabled so diagrams render large and readable — do **not** use the bare `mermaid.initialize({ startOnLoad: true, theme: "default" })`. Disable Mermaid's intrinsic width cap, then render with `mermaid.run()` and tag very wide diagrams so they stay legible (see next bullet):
   ```html
   <script>
     mermaid.initialize({
       startOnLoad: false,
-      theme: "dark",
+      theme: "default",
       themeVariables: { fontSize: "16px" },
       flowchart: { useMaxWidth: false, htmlLabels: true },
       sequence: { useMaxWidth: false },

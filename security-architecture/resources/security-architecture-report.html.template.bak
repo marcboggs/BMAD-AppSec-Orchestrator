@@ -7,8 +7,8 @@
 <style>
   :root {
     --bg: #ffffff; --panel: #f5f6f8; --border: #d8dce3; --text: #1c1f26;
-    --muted: #9aa3b2; --accent: #5b8def;
-    --crit: #ef4444; --high: #f59e0b; --med: #eab308; --low: #22c55e;
+    --muted: #5b6472; --accent: #2563eb;
+    --crit: #dc2626; --high: #d97706; --med: #ca8a04; --low: #16a34a;
   }
   * { box-sizing: border-box; }
   body {
