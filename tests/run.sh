@@ -66,7 +66,7 @@ run_in_home() {  # run_in_home FAKEHOME SCRIPT [args...]
 test_agent_list_derivation() {
     group "Kiro agent list is derived correctly from */install.sh"
 
-    local expected="api-spec-review bughunter compliance iac-audit pentest-planner secreview security-architecture security-orchestrator supply-chain threat-model"
+    local expected="api-spec-review bughunter compliance iac-audit pentest-planner secreview security-architecture security-orchestrator skill-reviewer supply-chain threat-model"
 
     local names=()
     local installer
@@ -76,7 +76,7 @@ test_agent_list_derivation() {
         [ -n "$n" ] && names+=("$n")
     done
 
-    assert_eq "${#names[@]}" "10" "finds 10 agents"
+    assert_eq "${#names[@]}" "11" "finds 11 agents"
 
     local got
     got="$(printf '%s\n' "${names[@]}" | sort | tr '\n' ' ' | sed 's/ $//')"

@@ -118,6 +118,15 @@ Write-Success "Config  → ~\.kiro\agents\$AgentName.json"
 Copy-Item -Path (Join-Path $ScriptDir "prompt.md") -Destination (Join-Path $ResourcesDir "prompt.md") -Force
 Write-Success "Prompt  → ~\.kiro\agents\$AgentName-resources\prompt.md"
 
+# Hook logger (session-kill forensics; sanitized breadcrumbs to ~/.kiro/logs/)
+$HookSrc = Join-Path (Join-Path $ScriptDir "resources") "hooklog.py"
+if (Test-Path $HookSrc) {
+    Copy-Item -Path $HookSrc -Destination (Join-Path $ResourcesDir "hooklog.py") -Force
+    Write-Success "Hook logger  → ~\.kiro\agents\$AgentName-resources\hooklog.py"
+    $LogsDir = Join-Path (Join-Path $env:USERPROFILE ".kiro") "logs"
+    if (-not (Test-Path $LogsDir)) { New-Item -ItemType Directory -Path $LogsDir -Force | Out-Null }
+}
+
 # Skills
 $SkillsSrc = Join-Path $ScriptDir "skills"
 if (Test-Path $SkillsSrc) {

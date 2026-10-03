@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Uninstalls the full Security Agent Suite from Kiro CLI (10 agents).
+# Uninstalls the full Security Agent Suite from Kiro CLI (11 agents).
 #
 # Each agent's install.sh writes three things into ~/.kiro:
 #     ~/.kiro/agents/<name>.json

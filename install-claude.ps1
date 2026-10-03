@@ -3,7 +3,7 @@
     Installs the Security Agent Suite for Claude Code (user-level).
 .DESCRIPTION
     Copies .claude/agents, .claude/skills, and .claude/commands from this repo
-    into ~/.claude/, so the 10 agents, 86 skills, and 19 slash commands are
+    into ~/.claude/, so the 11 agents, 86 skills, and 19 slash commands are
     available in every Claude Code project, not just this one.
 
     Unlike the old Kiro installers, there is no dependency order to respect --
@@ -20,7 +20,7 @@ $ClaudeHome  = Join-Path $env:USERPROFILE ".claude"
 Write-Host ""
 Write-Host "  ==========================================================" -ForegroundColor Magenta
 Write-Host "   Security Agent Suite for Claude Code" -ForegroundColor Magenta
-Write-Host "   10 agents / 86 skills / 19 commands (user-level)" -ForegroundColor Magenta
+Write-Host "   11 agents / 86 skills / 19 commands (user-level)" -ForegroundColor Magenta
 Write-Host "  ==========================================================" -ForegroundColor Magenta
 Write-Host ""
 
@@ -33,7 +33,7 @@ New-Item -ItemType Directory -Force -Path $AgentsDst, $SkillsDst, $CommandsDst |
 
 Write-Host "  * Installing agents..." -ForegroundColor DarkGray
 Copy-Item -Path (Join-Path $ScriptDir ".claude\agents\*") -Destination $AgentsDst -Recurse -Force
-Write-Host "  [OK] 10 agents  -> ~\.claude\agents\ (incl. resources\ templates)" -ForegroundColor Green
+Write-Host "  [OK] 11 agents  -> ~\.claude\agents\ (incl. resources\ templates)" -ForegroundColor Green
 
 Write-Host "  * Installing skills..." -ForegroundColor DarkGray
 Copy-Item -Path (Join-Path $ScriptDir ".claude\skills\*") -Destination $SkillsDst -Recurse -Force

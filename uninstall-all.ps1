@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Uninstalls the full Security Agent Suite from Kiro CLI (10 agents).
+    Uninstalls the full Security Agent Suite from Kiro CLI (11 agents).
 .DESCRIPTION
     Each agent's installer writes ~\.kiro\agents\<name>.json,
     ~\.kiro\agents\<name>-resources\, and ~\.kiro\skills\<name>\. This removes

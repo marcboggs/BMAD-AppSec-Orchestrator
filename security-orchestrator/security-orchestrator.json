@@ -1,6 +1,6 @@
 {
   "name": "security-orchestrator",
-  "description": "Security engagement orchestrator that coordinates the 9-agent security suite workflow across the full security lifecycle — from scoping and discovery through architecture review, analysis, planning, execution, and compliance reporting.",
+  "description": "Security engagement orchestrator that coordinates the 10-agent security suite workflow across the full security lifecycle — from scoping and discovery through architecture review, analysis, planning, execution, and compliance reporting.",
   "tools": ["read", "write", "shell", "grep", "glob", "code", "subagent", "mcp:playwright"],
   "allowedTools": ["read", "write", "shell", "grep", "glob", "code", "subagent", "mcp:playwright"],
   "prompt": "file://~/.kiro/agents/security-orchestrator-resources/prompt.md",

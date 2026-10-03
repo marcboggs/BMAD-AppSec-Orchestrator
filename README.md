@@ -1,6 +1,6 @@
 # Security Agent Suite for Kiro CLI & Claude Code
 
-Ten security-focused agents orchestrated using the **BMAD methodology** (Breakthrough Method of Agile AI-Driven Development) — specialized personas with structured handoffs, quality gates, and iterative feedback loops across the full security lifecycle.
+Eleven security-focused agents orchestrated using the **BMAD methodology** (Breakthrough Method of Agile AI-Driven Development) — specialized personas with structured handoffs, quality gates, and iterative feedback loops across the full security lifecycle.
 
 This suite runs on **both** [Kiro CLI](https://kiro.dev) and [Claude Code](https://claude.com/claude-code). The methodology, agent personas, report schemas, and cross-reference format are identical on both platforms — only the install path and invocation mechanics differ:
 
@@ -36,6 +36,7 @@ graph LR
     subgraph "Phase 2: DISCOVER"
         D1[secreview<br/>SAST/SCA]
         D2[iac-audit<br/>IaC scan]
+        D3[skill-reviewer<br/>Skill trust]
     end
 
     subgraph "Phase 3: ANALYZE"
@@ -59,8 +60,10 @@ graph LR
 
     S --> D1
     S --> D2
+    S --> D3
     D1 -->|Gate: Triage| A0
     D2 -.-> R
+    D3 -.-> R
     A0 -->|risk register| A1
     A1 --> A2
     A1 --> A3
@@ -73,6 +76,7 @@ graph LR
     style S fill:#2c3e50,stroke:#3498db,color:#ecf0f1
     style D1 fill:#1a5276,stroke:#2980b9,color:#ecf0f1
     style D2 fill:#1a5276,stroke:#2980b9,color:#ecf0f1
+    style D3 fill:#1a5276,stroke:#2980b9,color:#ecf0f1
     style A1 fill:#1e8449,stroke:#27ae60,color:#ecf0f1
     style A0 fill:#1e8449,stroke:#27ae60,color:#ecf0f1
     style A2 fill:#1e8449,stroke:#27ae60,color:#ecf0f1
@@ -111,13 +115,16 @@ graph TD
 ```mermaid
 graph TD
     SR[secreview] -->|findings| TM[threat-model]
+    SKR[skill-reviewer] -->|"malicious-skill<br/>vectors"| TM
+    SKR -->|"control gaps"| CO[compliance]
     TM -->|validation request| PP[pentest-planner]
     PP -->|attack surface check| TM
     PP -->|execution plan| BH[bughunter]
     BH -->|"validated findings<br/>(model update)"| TM
-    CO[compliance] -->|"control gap<br/>re-scan request"| SR
+    CO -->|"control gap<br/>re-scan request"| SR
 
     style SR fill:#1a5276,stroke:#2980b9,color:#fff
+    style SKR fill:#1a5276,stroke:#2980b9,color:#fff
     style TM fill:#1e8449,stroke:#27ae60,color:#fff
     style PP fill:#7d3c98,stroke:#a569bd,color:#fff
     style BH fill:#922b21,stroke:#e74c3c,color:#fff
@@ -131,6 +138,7 @@ graph TD
 | **security-orchestrator** | Engagement coordinator | Senior security program manager | — |
 | **secreview** | SAST/SCA reviewer | AppSec engineer, zero false-positive tolerance | — |
 | **iac-audit** | IaC scanner | Cloud security architect, CIS-grounded | — |
+| **skill-reviewer** | Skill/prompt trust reviewer | Skill-supply-chain reviewer, obfuscation-recovery | — |
 | **bughunter** | Red-team operator | Senior pentester, evidence-mandatory | secreview |
 | **api-spec-review** | API security reviewer | API specialist, spec-driven | secreview |
 | **supply-chain** | Dependency & CI/CD auditor | Supply chain researcher, reachability-focused | secreview |
@@ -146,6 +154,7 @@ graph TD
     SO[🎼 security-orchestrator<br/><i>Coordinator</i>]
     SR[🔒 secreview<br/><i>SAST/SCA</i>]
     IA[🏗️ iac-audit<br/><i>IaC Scanner</i>]
+    SKR[🕵️ skill-reviewer<br/><i>Skill Trust</i>]
     BH[🐛 bughunter<br/><i>Red-team</i>]
     API[📋 api-spec-review<br/><i>API Security</i>]
     SC[📦 supply-chain<br/><i>Dep & CI/CD</i>]
@@ -156,6 +165,7 @@ graph TD
 
     SO -.->|orchestrates| SR
     SO -.->|orchestrates| IA
+    SO -.->|orchestrates| SKR
     SO -.->|orchestrates| SA
     SO -.->|orchestrates| TM
     SO -.->|orchestrates| BH
@@ -177,6 +187,7 @@ graph TD
     style SO fill:#2c3e50,stroke:#ecf0f1,color:#ecf0f1
     style SR fill:#1a5276,stroke:#2980b9,color:#fff
     style IA fill:#1a5276,stroke:#2980b9,color:#fff
+    style SKR fill:#1a5276,stroke:#2980b9,color:#fff
     style BH fill:#7d3c98,stroke:#a569bd,color:#fff
     style API fill:#7d3c98,stroke:#a569bd,color:#fff
     style SC fill:#7d3c98,stroke:#a569bd,color:#fff
@@ -194,6 +205,7 @@ Each agent writes to a standard output path and uses a cross-reference prefix:
 |-------|--------|--------|-------------------|
 | secreview | `reports/secreview/` | SR | `[SR-SAST-003]` |
 | iac-audit | `reports/iac-audit/` | IAC | `[IAC-007]` |
+| skill-reviewer | `reports/skill-reviewer/` | SKR | `[SKR-OBF-001]` |
 | bughunter | `reports/bughunter/` | BH | `[BH-SQLI-001]` |
 | api-spec-review | `reports/api-spec-review/` | API | `[API-BOLA-002]` |
 | supply-chain | `reports/supply-chain/` | SC | `[SC-CVE-2024-1234]` |
@@ -306,6 +318,7 @@ Each agent can be installed separately. Dependencies are checked and auto-instal
 # Windows — no-dependency agents
 .\secreview\install.ps1
 .\iac-audit\install.ps1
+.\skill-reviewer\install.ps1
 .\security-orchestrator\install.ps1
 
 # Depends on secreview (auto-installed if missing)
@@ -324,6 +337,7 @@ Each agent can be installed separately. Dependencies are checked and auto-instal
 # Linux / macOS
 ./secreview/install.sh
 ./iac-audit/install.sh
+./skill-reviewer/install.sh
 ./security-orchestrator/install.sh
 ./bughunter/install.sh
 ./api-spec-review/install.sh
@@ -350,7 +364,7 @@ kiro-cli --agent secreview
 
 ## Install All (Claude Code)
 
-The `.claude/` directory in this repo already contains everything (10 agents, 86 skills, 19 slash commands) — if you run Claude Code **from this repo**, it's available immediately with no install step, because Claude Code auto-discovers project-local `.claude/agents`, `.claude/skills`, and `.claude/commands`.
+The `.claude/` directory in this repo already contains everything (11 agents, 86 skills, 19 slash commands) — if you run Claude Code **from this repo**, it's available immediately with no install step, because Claude Code auto-discovers project-local `.claude/agents`, `.claude/skills`, and `.claude/commands`.
 
 To make the suite available in **every** project (not just this repo), install it to your user-level `~/.claude/`:
 
@@ -396,6 +410,8 @@ Agent tool → subagent_type: "secreview" → "review ./src"
 .
 ├── README.md                        ← This file
 ├── reports-schema.md                ← BMAD artifact format specification (shared by both platforms)
+├── LOGGING.md                       ← Session action logging (post-mortem for safety-blocked sessions)
+├── hooks/hooklog.py                 ← Portable kiro-cli hook logger (sanitized tool/turn breadcrumbs)
 ├── .mcp.json                        ← Claude Code MCP server config (burp/playwright/semgrep)
 │
 │   lib/preflight.sh / .ps1          ← Runtime-prerequisite check (sourced by installers)
@@ -407,6 +423,8 @@ Agent tool → subagent_type: "secreview" → "review ./src"
 ├── security-orchestrator/           ← Orchestrator (BMAD coordinator)
 ├── secreview/                       ← Layer 1: Base SAST/SCA agent
 ├── iac-audit/                       ← Layer 1: IaC scanner (standalone)
+├── skill-reviewer/                  ← Layer 1: Skill/prompt trust reviewer (standalone)
+│   └── resources/                   ← Self-contained prefilter.py + promptguard steering + skillspector notes
 ├── bughunter/                       ← Layer 2: Red-team operator
 │   └── skills/                      ← 54 skill folders + 14 commands (+ stale `pentest/` duplicate, safe to remove)
 ├── api-spec-review/                 ← Layer 2: API security reviewer
@@ -423,7 +441,7 @@ Agent tool → subagent_type: "secreview" → "review ./src"
 ├── install-claude.sh                ← Install all to ~/.claude/ (Linux/macOS)
 ├── uninstall-claude.ps1 / .sh       ← Remove suite files from ~/.claude/ (--dry-run / --yes)
 └── .claude/
-    ├── agents/                      ← All 10 agents as single .md files (frontmatter + prompt)
+    ├── agents/                      ← All 11 agents as single .md files (frontmatter + prompt)
     │   └── resources/               ← threat-model/ + security-architecture/ templates
     ├── skills/                      ← Same 54 skills, ported 1:1 (auto-load by semantic match)
     └── commands/                    ← 19 slash commands: 14 bughunter workflow + 5 orchestrator
@@ -436,6 +454,7 @@ The Kiro folders (`secreview/`, `bughunter/`, etc.) are the canonical **source**
 - [`security-orchestrator/`](security-orchestrator/) / [`.claude/agents/security-orchestrator.md`](.claude/agents/security-orchestrator.md) — Engagement lifecycle coordinator
 - [`secreview/README.md`](secreview/README.md) / [`.claude/agents/secreview.md`](.claude/agents/secreview.md) — SAST workflow and output format
 - [`iac-audit/`](iac-audit/) / [`.claude/agents/iac-audit.md`](.claude/agents/iac-audit.md) — IaC scanning (Terraform, Docker, K8s)
+- [`skill-reviewer/README.md`](skill-reviewer/README.md) / [`.claude/agents/skill-reviewer.md`](.claude/agents/skill-reviewer.md) — Skill/prompt/MCP trust review with obfuscation recovery
 - [`bughunter/README.md`](bughunter/README.md) / [`.claude/agents/bughunter.md`](.claude/agents/bughunter.md) — Full command reference and coverage
 - [`api-spec-review/`](api-spec-review/) / [`.claude/agents/api-spec-review.md`](.claude/agents/api-spec-review.md) — OWASP API Top 10 analysis
 - [`supply-chain/`](supply-chain/) / [`.claude/agents/supply-chain.md`](.claude/agents/supply-chain.md) — Dependency, SBOM, and CI/CD security
@@ -450,7 +469,7 @@ Each target ships an uninstaller that removes **only** what its installer added,
 
 ### Kiro CLI
 
-Removes `~/.kiro/agents/<name>.json`, `~/.kiro/agents/<name>-resources/`, and `~/.kiro/skills/<name>/` for all 10 agents.
+Removes `~/.kiro/agents/<name>.json`, `~/.kiro/agents/<name>-resources/`, and `~/.kiro/skills/<name>/` for all 11 agents.
 
 **Windows:**
 ```powershell

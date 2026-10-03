@@ -18,6 +18,11 @@ reports/
 │   └── <component-slug>/
 │       ├── iac-audit-report.md
 │       └── iac-audit-report.html
+├── skill-reviewer/
+│   └── <skill-slug>/
+│       ├── skill-review.md
+│       ├── skill-review.html
+│       └── verdict.json
 ├── security-architecture/
 │   └── <component-slug>/
 │       ├── security-architecture-review.md
@@ -199,6 +204,7 @@ Agents cite each other's findings using bracket notation with a standardized ID 
 |-------|--------|---------|
 | secreview | `SR` | `[SR-SAST-003]` |
 | iac-audit | `IA` | `[IA-MISC-012]` |
+| skill-reviewer | `SKR` | `[SKR-OBF-001]` |
 | security-architecture | `SA` | `[SA-AUTHZ-001]` |
 | threat-model | `TM` | `[TM-STRIDE-007]` |
 | api-spec-review | `API` | `[API-BOLA-001]` |
@@ -213,6 +219,7 @@ Agents cite each other's findings using bracket notation with a standardized ID 
 |-------|-----------|
 | secreview | `SAST`, `SCA`, `DAST` |
 | iac-audit | `MISC` (misconfiguration), `CIS`, `NET`, `IAM`, `ENC` |
+| skill-reviewer | `PI` (prompt injection), `JB` (jailbreak), `OBF` (obfuscation), `EXFIL`, `PERSIST`, `MCP`, `SUPPLY`, `TRIGGER`, `META` |
 | security-architecture | `AUTHN`, `AUTHZ`, `CRYPTO`, `SECRETS`, `SEGMENT`, `DEFENSE`, `EXPOSURE`, `RESILIENCE`, `DATA` |
 | threat-model | `STRIDE` (single), `SPOOF`, `TAMPER`, `REPUD`, `INFO`, `DOS`, `ELEV` |
 | api-spec-review | `BOLA`, `BFLA`, `INJECT`, `MASS`, `SSRF`, `RATE`, `AUTH` |

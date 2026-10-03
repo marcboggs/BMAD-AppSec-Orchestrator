@@ -43,6 +43,17 @@
       {
         "command": "echo BugHunter agent loaded. 86 skills + 14 commands ready. Describe your target and relevant skills auto-load."
       }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "*",
+        "command": "python \"~/.kiro/agents/bughunter-resources/hooklog.py\" bughunter"
+      }
+    ],
+    "stop": [
+      {
+        "command": "python \"~/.kiro/agents/bughunter-resources/hooklog.py\" bughunter"
+      }
     ]
   },
   "keyboardShortcut": "ctrl+shift+b",

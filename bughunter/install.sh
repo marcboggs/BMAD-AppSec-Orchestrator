@@ -94,6 +94,13 @@ ok "Config  → ~/.kiro/agents/${AGENT_NAME}.json"
 cp "$SCRIPT_DIR/prompt.md" "$RESOURCES_DIR/prompt.md"
 ok "Prompt  → ~/.kiro/agents/${AGENT_NAME}-resources/prompt.md"
 
+# Hook logger (session-kill forensics; sanitized breadcrumbs to ~/.kiro/logs/)
+if [ -f "$SCRIPT_DIR/resources/hooklog.py" ]; then
+    cp "$SCRIPT_DIR/resources/hooklog.py" "$RESOURCES_DIR/hooklog.py"
+    ok "Hook logger  → ~/.kiro/agents/${AGENT_NAME}-resources/hooklog.py"
+    mkdir -p "$HOME/.kiro/logs"
+fi
+
 # Skills
 if [ -d "$SCRIPT_DIR/skills" ]; then
     step "Installing skills..."
